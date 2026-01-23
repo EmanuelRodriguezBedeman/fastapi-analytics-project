@@ -10,19 +10,19 @@ jobs:
   test:
     runs-on: ubuntu-latest
     
-    services:
-      postgres:
-        image: postgres:15
-        env:
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: test_db
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
+    # services:
+    #   postgres:
+    #     image: postgres:15
+    #     env:
+    #       POSTGRES_PASSWORD: {{ secrets.POSTGRES_PASSWORD }}
+    #       POSTGRES_DB: {{ secrets.POSTGRES_DB }}
+    #     options: >-
+    #       --health-cmd pg_isready
+    #       --health-interval 10s
+    #       --health-timeout 5s
+    #       --health-retries 5
+    #     ports:
+    #       - 5432:5432
     
     steps:
     - uses: actions/checkout@v3
@@ -38,8 +38,21 @@ jobs:
         pip install -r requirements.txt
         pip install -r requirements-dev.txt
     
-    - name: Run tests
-      env:
-        DATABASE_URL: postgresql://postgres:postgres@localhost:5432/test_db
+    - name: Run linting
+      run: |
+        ruff check app/ tests/
+        ruff format --check app/ tests/
+
+    - name: Run formatting
+      run: |
+        ruff format --check app/ tests/
+
+    - name: Run unittests
       run: |
         pytest tests/ -v
+    
+    # - name: Run tests
+    #   env:
+    #     DATABASE_URL: postgresql://postgres:{{ secrets.POSTGRES_PASSWORD }}@localhost:5432/{{ secrets.POSTGRES_DB }}
+    #   run: |
+    #     pytest tests/ -v

@@ -5,17 +5,17 @@ Order model
 # from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey, Enum
 # from sqlalchemy.sql import func
 # from sqlalchemy.orm import relationship
-import enum
+# import enum
 # from app.database import Base
 
 
-class OrderStatus(str, enum.Enum):
-    """Order status enumeration"""
-    PENDING = "pending"
-    PROCESSING = "processing"
-    SHIPPED = "shipped"
-    DELIVERED = "delivered"
-    CANCELLED = "cancelled"
+# class OrderStatus(str, enum.Enum):
+#     """Order status enumeration"""
+#     PENDING = "pending"
+#     PROCESSING = "processing"
+#     SHIPPED = "shipped"
+#     DELIVERED = "delivered"
+#     CANCELLED = "cancelled"
 
 
 # class Order(Base):

@@ -1,4 +1,4 @@
-# FastAPI E-commerce
+# FastAPI Analytics Project
 
 A modern e-commerce API built with FastAPI, SQLAlchemy, and PostgreSQL.
 
