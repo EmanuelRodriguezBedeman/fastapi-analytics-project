@@ -1,5 +1,7 @@
 # FastAPI Analytics Project
 
+[App on Render](https://fastapi-analytics-project.onrender.com/docs)
+
 A modern e-commerce API built with FastAPI, SQLAlchemy, and PostgreSQL.
 
 ## Features
