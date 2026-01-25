@@ -3,6 +3,7 @@ Application configuration
 """
 
 from pydantic_settings import BaseSettings
+from pydantic import ConfigDict
 from typing import List
 
 
@@ -24,9 +25,10 @@ class Settings(BaseSettings):
     DEBUG: bool = True
     PROJECT_NAME: str = "FastAPI E-commerce"
     
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    model_config = ConfigDict(
+        env_file=".env",
+        case_sensitive=True
+    )
 
 
 settings = Settings()
