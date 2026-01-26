@@ -9,9 +9,9 @@ Product model
 
 # class Product(Base):
 #     """Product database model"""
-#     
+#
 #     __tablename__ = "products"
-#     
+#
 #     id = Column(Integer, primary_key=True, index=True)
 #     name = Column(String, index=True, nullable=False)
 #     description = Column(Text, nullable=True)

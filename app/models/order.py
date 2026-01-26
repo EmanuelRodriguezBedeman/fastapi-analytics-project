@@ -20,9 +20,9 @@ Order model
 
 # class Order(Base):
 #     """Order database model"""
-#     
+#
 #     __tablename__ = "orders"
-#     
+#
 #     id = Column(Integer, primary_key=True, index=True)
 #     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
 #     total_amount = Column(Float, nullable=False)
@@ -30,6 +30,6 @@ Order model
 #     shipping_address = Column(String, nullable=False)
 #     created_at = Column(DateTime(timezone=True), server_default=func.now())
 #     updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-#     
+#
 #     # Relationships
 #     user = relationship("User", backref="orders")

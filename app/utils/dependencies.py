@@ -2,7 +2,8 @@
 FastAPI dependencies
 """
 
-from fastapi import Depends, HTTPException, status
+from fastapi import HTTPException, status
+
 # from sqlalchemy.orm import Session
 
 # from app.database import get_db as get_database_session
@@ -16,8 +17,7 @@ def get_db():
     """
     # return next(get_database_session())
     raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Database functionality is disabled"
+        status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Database functionality is disabled"
     )
 
 
@@ -27,14 +27,14 @@ def get_db():
 # ) -> User:
 #     """
 #     Dependency to get current authenticated user
-#     
+#
 #     Args:
 #         token: JWT token from request
 #         db: Database session
-#     
+#
 #     Returns:
 #         User: Current authenticated user
-#     
+#
 #     Raises:
 #         HTTPException: If token is invalid or user not found
 #     """
@@ -43,19 +43,19 @@ def get_db():
 #         detail="Could not validate credentials",
 #         headers={"WWW-Authenticate": "Bearer"},
 #     )
-#     
+#
 #     payload = AuthService.verify_token(token)
 #     if payload is None:
 #         raise credentials_exception
-#     
+#
 #     user_id: int = payload.get("sub")
 #     if user_id is None:
 #         raise credentials_exception
-#     
+#
 #     user = db.query(User).filter(User.id == user_id).first()
 #     if user is None:
 #         raise credentials_exception
-#     
+#
 #     return user
 
 
@@ -64,13 +64,13 @@ def get_db():
 # ) -> User:
 #     """
 #     Dependency to get current active user
-#     
+#
 #     Args:
 #         current_user: Current user from get_current_user
-#     
+#
 #     Returns:
 #         User: Active user
-#     
+#
 #     Raises:
 #         HTTPException: If user is inactive
 #     """

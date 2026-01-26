@@ -2,12 +2,14 @@
 Order router endpoints
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
 # from sqlalchemy.orm import Session
 from typing import List
 
+from fastapi import APIRouter, HTTPException, status
+
 # from app.utils.dependencies import get_db
-from app.schemas.order import OrderCreate, OrderUpdate, OrderResponse
+from app.schemas.order import OrderCreate, OrderResponse, OrderUpdate
+
 # from app.models.order import Order
 
 router = APIRouter()
@@ -35,10 +37,7 @@ async def get_order(order_id: int):  # db: Session = Depends(get_db)
     #         detail="Order not found"
     #     )
     # return order
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="Order not found"
-    )
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
 
 
 @router.post("/", response_model=OrderResponse, status_code=status.HTTP_201_CREATED)
@@ -47,8 +46,7 @@ async def create_order(order: OrderCreate):  # db: Session = Depends(get_db)
     # TODO: Implement order creation logic
     # pass
     raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Database functionality is disabled"
+        status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Database functionality is disabled"
     )
 
 
@@ -62,8 +60,7 @@ async def update_order(
     # TODO: Implement order update logic
     # pass
     raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Database functionality is disabled"
+        status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Database functionality is disabled"
     )
 
 
@@ -73,6 +70,5 @@ async def delete_order(order_id: int):  # db: Session = Depends(get_db)
     # TODO: Implement order deletion logic
     # pass
     raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Database functionality is disabled"
+        status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Database functionality is disabled"
     )

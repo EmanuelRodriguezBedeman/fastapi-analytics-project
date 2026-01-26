@@ -2,12 +2,14 @@
 Product router endpoints
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
 # from sqlalchemy.orm import Session
 from typing import List
 
+from fastapi import APIRouter, HTTPException, status
+
 # from app.utils.dependencies import get_db
-from app.schemas.product import ProductCreate, ProductUpdate, ProductResponse
+from app.schemas.product import ProductCreate, ProductResponse, ProductUpdate
+
 # from app.models.product import Product
 
 router = APIRouter()
@@ -39,10 +41,7 @@ async def get_product(product_id: int):  # db: Session = Depends(get_db)
     #         detail="Product not found"
     #     )
     # return product
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="Product not found"
-    )
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
 
 
 @router.post("/", response_model=ProductResponse, status_code=status.HTTP_201_CREATED)
@@ -51,8 +50,7 @@ async def create_product(product: ProductCreate):  # db: Session = Depends(get_d
     # TODO: Implement product creation logic
     # pass
     raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Database functionality is disabled"
+        status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Database functionality is disabled"
     )
 
 
@@ -66,8 +64,7 @@ async def update_product(
     # TODO: Implement product update logic
     # pass
     raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Database functionality is disabled"
+        status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Database functionality is disabled"
     )
 
 
@@ -77,6 +74,5 @@ async def delete_product(product_id: int):  # db: Session = Depends(get_db)
     # TODO: Implement product deletion logic
     # pass
     raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Database functionality is disabled"
+        status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Database functionality is disabled"
     )

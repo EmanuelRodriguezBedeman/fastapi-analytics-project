@@ -32,6 +32,6 @@ Order schemas for request/response validation
 #     status: OrderStatus
 #     created_at: datetime
 #     updated_at: Optional[datetime] = None
-    
+
 #     class Config:
 #         from_attributes = True
