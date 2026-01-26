@@ -2,9 +2,9 @@
 Pydantic schemas for request/response validation
 """
 
-from app.schemas.user import UserCreate, UserUpdate, UserResponse
-from app.schemas.product import ProductCreate, ProductUpdate, ProductResponse
-from app.schemas.order import OrderCreate, OrderUpdate, OrderResponse
+from app.schemas.order import OrderCreate, OrderResponse, OrderUpdate
+from app.schemas.product import ProductCreate, ProductResponse, ProductUpdate
+from app.schemas.user import UserCreate, UserResponse, UserUpdate
 
 __all__ = [
     "UserCreate",

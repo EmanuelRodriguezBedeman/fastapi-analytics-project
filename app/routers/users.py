@@ -2,12 +2,14 @@
 User router endpoints
 """
 
-from fastapi import APIRouter, Depends, HTTPException, status
 # from sqlalchemy.orm import Session
 from typing import List
 
+from fastapi import APIRouter, HTTPException, status
+
 # from app.utils.dependencies import get_db
-from app.schemas.user import UserCreate, UserUpdate, UserResponse
+from app.schemas.user import UserCreate, UserResponse, UserUpdate
+
 # from app.models.user import User
 
 router = APIRouter()
@@ -35,10 +37,7 @@ async def get_user(user_id: int):  # db: Session = Depends(get_db)
     #         detail="User not found"
     #     )
     # return user
-    raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="User not found"
-    )
+    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
 
 @router.post("/", response_model=UserResponse, status_code=status.HTTP_201_CREATED)
@@ -47,8 +46,7 @@ async def create_user(user: UserCreate):  # db: Session = Depends(get_db)
     # TODO: Implement user creation logic
     # pass
     raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Database functionality is disabled"
+        status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Database functionality is disabled"
     )
 
 
@@ -62,8 +60,7 @@ async def update_user(
     # TODO: Implement user update logic
     # pass
     raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Database functionality is disabled"
+        status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Database functionality is disabled"
     )
 
 
@@ -73,6 +70,5 @@ async def delete_user(user_id: int):  # db: Session = Depends(get_db)
     # TODO: Implement user deletion logic
     # pass
     raise HTTPException(
-        status_code=status.HTTP_501_NOT_IMPLEMENTED,
-        detail="Database functionality is disabled"
+        status_code=status.HTTP_501_NOT_IMPLEMENTED, detail="Database functionality is disabled"
     )
