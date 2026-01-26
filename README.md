@@ -86,6 +86,25 @@ API documentation will be available at:
 pytest tests/ -v
 ```
 
+## Development Workflow
+
+This project uses [Ruff](https://docs.astral.sh/ruff/) for linting/formatting and [mypy](https://mypy-lang.org/) for type checking. Configuration is centralized in `pyproject.toml`.
+
+Format code:
+```bash
+ruff format .
+```
+
+Lint code (fix auto-fixable issues):
+```bash
+ruff check . --fix
+```
+
+Type check:
+```bash
+mypy .
+```
+
 ## Docker
 
 Build and run with Docker:
