@@ -9,3 +9,30 @@ ignore = ["E501"]
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
+
+[project]
+name = "fastapi-ecommerce"
+version = "0.1.0"
+description = "FastAPI E-commerce project"
+authors = [{name = "Your Name", email = "your.email@example.com"}]
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi",
+    "uvicorn",
+    "sqlalchemy",
+    "alembic",
+    "pydantic",
+    "pydantic-settings",
+]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-ra -q"
+testpaths = [
+    "tests",
+]
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
