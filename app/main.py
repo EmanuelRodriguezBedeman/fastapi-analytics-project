@@ -5,10 +5,11 @@ FastAPI E-commerce Main Application
 from fastapi import FastAPI
 
 from app.routers import customers, orders, products, reviews
+from app.config import settings
 
 app = FastAPI(
-    title="FastAPI E-commerce",
-    description="A modern e-commerce API built with FastAPI",
+    title=settings.PROJECT_NAME,
+    description=f"A modern analytics API built with {settings.PROJECT_NAME}",
     version="0.1.0",
 )
 
@@ -22,7 +23,7 @@ app.include_router(reviews.router, prefix="/api/v1/reviews", tags=["reviews"])
 @app.get("/")
 async def root():
     """Root endpoint"""
-    return {"message": "Welcome to FastAPI E-commerce API"}
+    return {"message": f"Welcome to {settings.PROJECT_NAME}"}
 
 
 @app.get("/health")
