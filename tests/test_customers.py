@@ -12,7 +12,7 @@ def test_get_all_customers():
     with TestClient(app) as client:
         # Request to the endpoint
         response = client.get("/customers")
-        
+
         # Asserts that the response status code is 200
         assert response.status_code == 200
 
@@ -23,6 +23,6 @@ def test_get_customer():
     with TestClient(app) as client:
         # Request to the endpoint
         response = client.get("/customers/500")
-        
+
         # Asserts that the response status code is 200
         assert response.status_code == 200
