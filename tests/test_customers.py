@@ -1,5 +1,5 @@
 """
-Customer table tests
+Tests for customers endpoints
 """
 
 from fastapi.testclient import TestClient
@@ -7,7 +7,7 @@ from app.main import app
 
 
 def test_get_all_customers():
-    """Test the customers endpoint returns 200 OK and correct status"""
+    """Test getting all customers"""
 
     with TestClient(app) as client:
         # Request to the endpoint
@@ -18,7 +18,7 @@ def test_get_all_customers():
 
 
 def test_get_customer():
-    """Test customers by ID endpoint returns 200 OK and correct status"""
+    """Test getting a specific customer by ID"""
 
     with TestClient(app) as client:
         # Request to the endpoint
