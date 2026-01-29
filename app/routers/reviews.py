@@ -8,7 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from app.models.review import Review
-from app.schemas.review import ReviewCreate, ReviewResponse, ReviewUpdate
+from app.schemas.review import ReviewResponse
 from app.utils.dependencies import get_db
 
 router = APIRouter()
