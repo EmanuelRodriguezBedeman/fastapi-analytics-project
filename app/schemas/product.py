@@ -17,20 +17,6 @@ class ProductBase(BaseModel):
     category: Optional[str] = None
 
 
-class ProductCreate(ProductBase):
-    """Schema for creating a product"""
-    pass
-
-
-class ProductUpdate(BaseModel):
-    """Schema for updating a product"""
-    name: Optional[str] = None
-    description: Optional[str] = None
-    price: Optional[float] = None
-    stock: Optional[int] = None
-    category: Optional[str] = None
-
-
 class ProductResponse(ProductBase):
     """Schema for product response"""
     id: int
