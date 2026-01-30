@@ -5,7 +5,7 @@ FastAPI E-commerce Main Application
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import text
-from app.routers import customers, orders, products, reviews
+from app.routers import customers, orders, products, reviews, order_items
 from app.config import settings
 from app.utils.dependencies import get_db
 
@@ -20,6 +20,7 @@ app.include_router(customers.router, prefix="/customers", tags=["customers"])
 app.include_router(products.router, prefix="/products", tags=["products"])
 app.include_router(orders.router, prefix="/orders", tags=["orders"])
 app.include_router(reviews.router, prefix="/reviews", tags=["reviews"])
+app.include_router(order_items.router, prefix="/order_items", tags=["order_items"])
 
 
 @app.get("/")
