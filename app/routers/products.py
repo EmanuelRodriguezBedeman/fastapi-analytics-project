@@ -16,10 +16,7 @@ router = APIRouter()
 
 @router.get("/", response_model=List[ProductResponse])
 async def get_products(
-    skip: int = 0,
-    limit: int = 100,
-    category: str = None,
-    db: Session = Depends(get_db)
+    skip: int = 0, limit: int = 100, category: str = None, db: Session = Depends(get_db)
 ):
     """Get all products"""
     query = db.query(Product)
@@ -34,8 +31,5 @@ async def get_product(product_id: int, db: Session = Depends(get_db)):
     """Get a specific product by ID"""
     product = db.query(Product).filter(Product.id == product_id).first()
     if not product:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Product not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
     return product

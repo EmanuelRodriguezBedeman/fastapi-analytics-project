@@ -15,11 +15,7 @@ router = APIRouter()
 
 
 @router.get("/", response_model=List[OrderResponse])
-async def get_orders(
-    skip: int = 0,
-    limit: int = 100,
-    db: Session = Depends(get_db)
-):
+async def get_orders(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     """Get all orders"""
     orders = db.query(Order).offset(skip).limit(limit).all()
     return orders
@@ -30,8 +26,5 @@ async def get_order(order_id: int, db: Session = Depends(get_db)):
     """Get a specific order by ID"""
     order = db.query(Order).filter(Order.id == order_id).first()
     if not order:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Order not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Order not found")
     return order

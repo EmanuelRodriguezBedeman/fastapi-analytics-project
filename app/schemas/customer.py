@@ -10,6 +10,7 @@ from pydantic import BaseModel, ConfigDict, EmailStr
 
 class CustomerBase(BaseModel):
     """Base customer schema"""
+
     email: EmailStr
     name: str
     country: Optional[str] = None
@@ -19,6 +20,7 @@ class CustomerBase(BaseModel):
 
 class CustomerResponse(CustomerBase):
     """Schema for customer response"""
+
     id: int
     created_at: datetime
 

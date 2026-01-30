@@ -15,11 +15,7 @@ router = APIRouter()
 
 
 @router.get("/", response_model=List[CustomerResponse])
-async def get_customers(
-    skip: int = 0,
-    limit: int = 100,
-    db: Session = Depends(get_db)
-):
+async def get_customers(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     """Get all customers"""
     customers = db.query(Customer).offset(skip).limit(limit).all()
     return customers
@@ -30,8 +26,5 @@ async def get_customer(customer_id: int, db: Session = Depends(get_db)):
     """Get a specific customer by ID"""
     customer = db.query(Customer).filter(Customer.id == customer_id).first()
     if not customer:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Customer not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Customer not found")
     return customer

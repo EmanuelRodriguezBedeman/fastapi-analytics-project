@@ -10,6 +10,7 @@ from pydantic import BaseModel, ConfigDict
 
 class ProductBase(BaseModel):
     """Base product schema"""
+
     name: str
     description: Optional[str] = None
     price: float
@@ -19,6 +20,7 @@ class ProductBase(BaseModel):
 
 class ProductResponse(ProductBase):
     """Schema for product response"""
+
     id: int
     created_at: datetime
     updated_at: Optional[datetime] = None

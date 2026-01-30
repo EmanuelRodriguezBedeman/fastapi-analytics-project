@@ -16,10 +16,7 @@ router = APIRouter()
 
 @router.get("/", response_model=List[ReviewResponse])
 async def get_reviews(
-    skip: int = 0,
-    limit: int = 100,
-    product_id: int = None,
-    db: Session = Depends(get_db)
+    skip: int = 0, limit: int = 100, product_id: int = None, db: Session = Depends(get_db)
 ):
     """Get all reviews, optionally filtered by product"""
     query = db.query(Review)
@@ -34,8 +31,5 @@ async def get_review(review_id: int, db: Session = Depends(get_db)):
     """Get a specific review by ID"""
     review = db.query(Review).filter(Review.id == review_id).first()
     if not review:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Review not found"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Review not found")
     return review

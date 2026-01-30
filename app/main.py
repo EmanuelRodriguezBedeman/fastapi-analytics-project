@@ -2,13 +2,13 @@
 FastAPI E-commerce Main Application
 """
 
-from fastapi import FastAPI, Depends, HTTPException
-from sqlalchemy.orm import Session
+from fastapi import Depends, FastAPI, HTTPException, status
 from sqlalchemy import text
-from app.routers import customers, orders, products, reviews, order_items
-from app.config import settings
-from app.utils.dependencies import get_db
+from sqlalchemy.orm import Session
 
+from app.config import settings
+from app.routers import customers, order_items, orders, products, reviews
+from app.utils.dependencies import get_db
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -39,16 +39,9 @@ async def check_db_health(db: Session = Depends(get_db)):
     try:
         # We use db.execute(text("SELECT 1")) to check if the DB is responding
         db.execute(text("SELECT 1"))
-        return {
-            "status": "healthy",
-            "database": "connected"
-        }
+        return {"status": "healthy", "database": "connected"}
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail = {
-                "status": "unhealthy",
-                "database": "disconnected",
-                "error": str(e)
-            }
+            detail={"status": "unhealthy", "database": "disconnected", "error": str(e)},
         )

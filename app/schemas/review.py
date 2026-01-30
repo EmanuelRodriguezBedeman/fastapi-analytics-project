@@ -10,6 +10,7 @@ from pydantic import BaseModel, ConfigDict
 
 class ReviewBase(BaseModel):
     """Base review schema"""
+
     product_id: int
     customer_id: int
     rating: int  # 1-5
@@ -18,6 +19,7 @@ class ReviewBase(BaseModel):
 
 class ReviewResponse(ReviewBase):
     """Schema for review response"""
+
     id: int
     created_at: datetime
     updated_at: Optional[datetime] = None
