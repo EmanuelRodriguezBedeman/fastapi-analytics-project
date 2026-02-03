@@ -30,6 +30,10 @@ fastapi-ecommerce/
 └── .github/workflows/   # CI/CD workflows
 ```
 
+## Navigational Context (for Agents)
+
+
+
 ## Setup
 
 ### Prerequisites
