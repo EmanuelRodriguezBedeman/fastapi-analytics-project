@@ -1,17 +1,18 @@
 ## Navigational Context (for Agents)
 
-- `AGENTS.md` defines rules and restrictions.
-- `/docs` contains architecture and business explanations.
-- CI/CD and core structures are stable by design
-- Agents should not infer authority — they must read AGENTS.md
+Authoritative constraints: see AGENTS.md
 
-src/routers/    → All FastAPI routers
-src/database.py → All DB access (SQLAlchemy)
-src/models/     → All ORM models (read-only for agent)
-src/schemas/    → All Pydantic schemas for validation (read-only for agent)
-/tests/         → All unit + integration tests
-/docs/          → Architecture and rules
-AGENTS.md       → Authority constraints for AI agents
+app/routers/        → FastAPI routers
+app/models/         → ORM models (read-only for agents)
+app/schemas/        → Pydantic schemas (read-only for agents)
+app/database.py     → All DB access (SQLAlchemy)
+/tests/             → unit + integration tests
+/docs/              → architecture, data models, business rules, ADRs
+
+Rules:
+- SQL only in app/database.py
+- routers only call services
+- do not modify models or routers or schemas unless explicitly allowed by AGENTS.md
 
 ---
 
