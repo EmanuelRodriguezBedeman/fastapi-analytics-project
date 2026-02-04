@@ -28,11 +28,13 @@ fastapi-ecommerce/
 ├── tests/               # Test suite
 ├── alembic/             # Database migrations
 └── .github/workflows/   # CI/CD workflows
-```
 
 ## Navigational Context (for Agents)
 
-
+- `AGENTS.md` defines rules and restrictions.
+- `/docs` contains architecture and business explanations.
+- CI/CD and core structures are stable by design
+- Agents should not infer authority — they must read AGENTS.md
 
 ## Setup
 
