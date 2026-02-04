@@ -1,18 +1,18 @@
-## Navigational Context (for Agents)
+## Navigational Context
 
 Authoritative constraints: see AGENTS.md
 
-app/routers/        → FastAPI routers
-app/models/         → ORM models (read-only for agents)
-app/schemas/        → Pydantic schemas (read-only for agents)
+app/routers/        → FastAPI routers (HTTP only, read-only for agents)
+app/models/         → ORM models (read-only)
+app/schemas/        → Pydantic schemas (validation logic allowed)
 app/database.py     → All DB access (SQLAlchemy)
-/tests/             → unit + integration tests
-/docs/              → architecture, data models, business rules, ADRs
+app/utils/          → shared helpers (editable)
+
+tests/              → unit + integration tests
+docs/               → architecture, data models, business rules, ADRs
 
 Rules:
-- SQL only in app/database.py
-- routers only call services
-- do not modify models or routers or schemas unless explicitly allowed by AGENTS.md
+- All database access only in app/database.py
 
 ---
 

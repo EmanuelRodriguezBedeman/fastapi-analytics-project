@@ -8,6 +8,7 @@ If a task requires changes outside these rules, stop and ask the user.
 - tests/**
 - app/utils/**
 - app/schemas/**
+- app/database.py
 
 ## Read-only paths:
 
@@ -16,7 +17,6 @@ If a task requires changes outside these rules, stop and ask the user.
 - app/routers/**
 - app/main.py
 - app/config.py
-- app/database.py
 - docs/**
 - scripts/**
 - .github/**
@@ -27,8 +27,9 @@ If a task requires changes outside these rules, stop and ask the user.
 
 - bug fixes
 - add or update tests
-- add validation inside schemas or services
-- optimize existing queries
+- add validation inside schemas
+optimize or fix SQLAlchemy queries and database logic in database.py
+
 - fix lint or type errors
 
 ## Forbidden changes
