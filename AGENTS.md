@@ -1,6 +1,3 @@
-This is the AGENTS.md that I made as a first iteration:
-
-```
 This agent operates only at development time inside the IDE.
 
 It may modify code only within the allowed paths below.
