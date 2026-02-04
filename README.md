@@ -36,13 +36,13 @@ fastapi-ecommerce/
 - CI/CD and core structures are stable by design
 - Agents should not infer authority — they must read AGENTS.md
 
-src/routers/    → FastAPI routers
-src/database.py → DB access (SQLAlchemy)
-src/models/     → ORM models (read-only for agent)
-src/schemas/    → Pydantic schemas for validation (read-only for agent)
-/tests/         → unit + integration tests
-/docs/          → architecture and rules
-AGENTS.md       → authority constraints for AI agents
+src/routers/    → All FastAPI routers
+src/database.py → All DB access (SQLAlchemy)
+src/models/     → All ORM models (read-only for agent)
+src/schemas/    → All Pydantic schemas for validation (read-only for agent)
+/tests/         → All unit + integration tests
+/docs/          → Architecture and rules
+AGENTS.md       → Authority constraints for AI agents
 
 ## Setup
 
