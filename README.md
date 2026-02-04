@@ -1,3 +1,20 @@
+## Navigational Context (for Agents)
+
+- `AGENTS.md` defines rules and restrictions.
+- `/docs` contains architecture and business explanations.
+- CI/CD and core structures are stable by design
+- Agents should not infer authority — they must read AGENTS.md
+
+src/routers/    → All FastAPI routers
+src/database.py → All DB access (SQLAlchemy)
+src/models/     → All ORM models (read-only for agent)
+src/schemas/    → All Pydantic schemas for validation (read-only for agent)
+/tests/         → All unit + integration tests
+/docs/          → Architecture and rules
+AGENTS.md       → Authority constraints for AI agents
+
+---
+
 # FastAPI Analytics Project
 
 [App on Render](https://fastapi-analytics-project.onrender.com/docs)
@@ -28,21 +45,6 @@ fastapi-ecommerce/
 ├── tests/               # Test suite
 ├── alembic/             # Database migrations
 └── .github/workflows/   # CI/CD workflows
-
-## Navigational Context (for Agents)
-
-- `AGENTS.md` defines rules and restrictions.
-- `/docs` contains architecture and business explanations.
-- CI/CD and core structures are stable by design
-- Agents should not infer authority — they must read AGENTS.md
-
-src/routers/    → All FastAPI routers
-src/database.py → All DB access (SQLAlchemy)
-src/models/     → All ORM models (read-only for agent)
-src/schemas/    → All Pydantic schemas for validation (read-only for agent)
-/tests/         → All unit + integration tests
-/docs/          → Architecture and rules
-AGENTS.md       → Authority constraints for AI agents
 
 ## Setup
 
