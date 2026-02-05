@@ -1,0 +1,27 @@
+repos:
+  # Ruff (lint + format)
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.15.0
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+        files: ^app/
+      - id: ruff-format
+        files: ^app/
+
+  # mypy (optional but strongly recommended)
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.19.1
+    hooks:
+      - id: mypy
+        files: ^app/
+
+  # Run tests before commit
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest
+        entry: conda run -n analytics-api python -m pytest tests/ -q --maxfail=1
+        language: system
+        pass_filenames: false
+        files: ^(app/|tests/)

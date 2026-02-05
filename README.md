@@ -1,3 +1,21 @@
+## Navigational Context
+
+Authoritative constraints: see AGENTS.md
+
+app/routers/        → FastAPI routers (HTTP only, read-only for agents)
+app/models/         → ORM models (read-only)
+app/schemas/        → Pydantic schemas (validation logic allowed)
+app/database.py     → All DB access (SQLAlchemy)
+app/utils/          → shared helpers (editable)
+
+tests/              → unit + integration tests
+docs/               → architecture, data models, business rules, ADRs
+
+Rules:
+- All database access only in app/database.py
+
+---
+
 # FastAPI Analytics Project
 
 [App on Render](https://fastapi-analytics-project.onrender.com/docs)
@@ -28,7 +46,6 @@ fastapi-ecommerce/
 ├── tests/               # Test suite
 ├── alembic/             # Database migrations
 └── .github/workflows/   # CI/CD workflows
-```
 
 ## Setup
 
@@ -79,6 +96,11 @@ The API will be available at `http://localhost:8000`
 API documentation will be available at:
 - Swagger UI: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
+
+## Development Setup
+1. Activate environment: `conda activate fastapi-ecommerce-prod`
+2. Install pre-commit: `pre-commit install`
+3. Commit as usual (pre-commit will use your active env)
 
 ## Running Tests
 
