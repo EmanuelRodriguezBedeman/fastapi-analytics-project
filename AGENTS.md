@@ -47,10 +47,15 @@ optimize or fix SQLAlchemy queries and database logic in database.py
 
 ## Tooling gates (mandatory)
 
+Pre-commit hooks enforce Ruff, mypy, and pytest automatically. 
+Commits are blocked if any check fails. 
+The agent must not bypass these hooks.
+
 All must pass before committing:
 
-- python -m ruff check . --fix
-- python -m ruff format .
+- ruff check . --fix
+- ruff format .
+- mypy app/
 - pytest tests/ -v
 
 If any check fails, fix before committing.

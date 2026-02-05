@@ -97,6 +97,11 @@ API documentation will be available at:
 - Swagger UI: `http://localhost:8000/docs`
 - ReDoc: `http://localhost:8000/redoc`
 
+## Development Setup
+1. Activate environment: `conda activate fastapi-ecommerce-prod`
+2. Install pre-commit: `pre-commit install`
+3. Commit as usual (pre-commit will use your active env)
+
 ## Running Tests
 
 ```bash
