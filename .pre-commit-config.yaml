@@ -19,6 +19,6 @@ repos:
     hooks:
       - id: pytest
         name: pytest
-        entry: conda run -n fastapi-ecommerce-prod python -m pytest tests/ -q --maxfail=1
+        entry: conda run -n analytics-api python -m pytest tests/ -q --maxfail=1
         language: system
         pass_filenames: false
