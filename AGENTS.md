@@ -89,6 +89,46 @@ Must ask first:
 
 ---
 
+For every task, follow this procedure strictly:
+
+1. Scope
+   - Read only the files directly related to the request.
+   - Do not scan or modify unrelated modules.
+
+2. Minimal change first
+   - Implement the smallest change that solves the problem.
+   - Prefer edits over rewrites.
+
+3. Local improvements allowed (same file only)
+   You may:
+   - simplify logic
+   - remove dead code
+   - improve naming
+   - extract small helpers
+   - add validation
+   - add or update tests
+   - fix lint or typing issues
+
+4. Do NOT expand scope
+   Do not:
+   - refactor other files
+   - reorganize folders
+   - introduce new abstractions or patterns
+   - modify architecture
+   - perform large cleanups
+
+5. Safety checks
+   - run Ruff
+   - run mypy
+   - run pytest
+   - fix failures before committing
+
+6. Stop after success
+   - once tests pass and the task is solved, stop
+   - do not perform extra improvements
+
+---
+
 ## General rules
 
 - keep changes small and reviewable
