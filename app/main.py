@@ -9,11 +9,13 @@ from sqlalchemy.orm import Session
 from app.config import settings
 from app.routers import customers, order_items, orders, products, reviews
 from app.utils.dependencies import get_db
+from app.utils.rate_limiter import rate_limit_dependency
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description=f"A modern analytics API built with {settings.PROJECT_NAME}",
     version="0.1.0",
+    dependencies=[Depends(rate_limit_dependency)],
 )
 
 
