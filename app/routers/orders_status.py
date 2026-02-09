@@ -2,11 +2,12 @@
 Order Status router endpoints
 """
 
-from typing import List
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
+from app.models.order import OrderStatus
 from app.repositories import order_status_repository
 from app.schemas.orders_status import OrderStatusBase
 from app.utils.dependencies import get_db
@@ -16,9 +17,7 @@ router = APIRouter()
 
 @router.get("/", response_model=List[OrderStatusBase])
 async def get_order_statuses(
-    order_status: str = Query(
-        None, description="Example: shipped", examples=["shipped", "pending", "processing"]
-    ),
+    order_status: Optional[OrderStatus] = Query(None, description="Filter by order status"),
     db: Session = Depends(get_db),
 ) -> List[OrderStatusBase]:
     """Get all order statuses"""
