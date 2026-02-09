@@ -26,4 +26,11 @@ class OrderResponse(OrderBase):
     created_at: datetime
     updated_at: Optional[datetime] = None
 
+
+class OrderStatusBase(BaseModel):
+    """Base order status schema"""
+
+    status: str
+    count: int
+
     model_config = ConfigDict(from_attributes=True)
