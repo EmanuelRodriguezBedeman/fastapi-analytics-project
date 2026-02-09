@@ -7,7 +7,7 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from app.config import settings
-from app.routers import customers, order_items, orders, products, reviews
+from app.routers import customers, order_items, orders, orders_status, products, reviews
 from app.utils.dependencies import get_db
 from app.utils.rate_limiter import rate_limit_dependency
 
@@ -20,6 +20,7 @@ app = FastAPI(
 
 
 # Include routers
+app.include_router(orders_status.router, prefix="/orders_status", tags=["order_status"])
 app.include_router(customers.router, prefix="/customers", tags=["customers"])
 app.include_router(products.router, prefix="/products", tags=["products"])
 app.include_router(orders.router, prefix="/orders", tags=["orders"])
