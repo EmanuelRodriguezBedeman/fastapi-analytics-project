@@ -56,14 +56,26 @@ fastapi-ecommerce/
 
 ## 🏗️ Architecture & Design
 
-### Domain-Driven Design (DDD)
-The project follows a modular architecture where each domain (Orders, Products, Customers) is self-contained.
-- **Consolidated Domains**: Recently, the `order_status` domain was fully consolidated into the `orders` domain to improve cohesion and reduce fragmentation.
 
-### Key Features
-- **Analytics**: Dedicated endpoints (e.g., `/orders/statuses`) for real-time business metrics, implemented with efficient database-level aggregation.
-- **Rate Limiting**: Custom token-bucket rate limiter to protect API resources.
-- **Code Quality**: Enforced via `ruff` (linter/formatter) and `mypy` (static type checking) in CI/CD pipeline.
+
+### Layered Architecture
+
+```mermaid
+graph TD
+    Client[Client / Frontend] -->|HTTP Request| Main[Main App (FastAPI)]
+    Main -->|Routing| Router[Routers (Layer 1)]
+    
+    subgraph Domain_Logic [Domain Layer]
+        Router -->|1. Validate| Schema[Pydantic Schemas]
+        Router -->|2. Call| Repo[Repositories (Layer 2)]
+    end
+    
+    subgraph Data_Persistence [Persistence Layer]
+        Repo -->|Query| Model[SQLAlchemy Models]
+        Model -->|SQL| DB[(Neon / PostgreSQL)]
+    end
+```
+- **Consolidated Domains**: Recently, the `order_status` domain was fully consolidated into the `orders` domain to improve cohesion and reduce fragmentation.
 
 
 ## Setup
