@@ -61,26 +61,23 @@ fastapi-ecommerce/
 ### Layered Architecture
 
 ```mermaid
-graph TD
-    Client[Client] -->|HTTP Request| API[FastAPI App]
-    
-    subgraph Routing_Layer [Layer 1: Entry Points]
+graph LR
+    Client[Client] -->|HTTP Request| API[FastAPI]
+
+    subgraph Routing_Layer [Routing Layer]
         API -->|Route| Routers[Routers]
         Routers -->|Validate| Schemas[Pydantic Schemas]
-    end
-    
-    subgraph Domain_Logic [Domain Layer]
         Routers -->|Request Data| Repos[Repositories]
     end
-    
-    subgraph Persistence_Layer [Layer 3: Database]
+
+    subgraph Persistence_Layer [Database]
         Repos -->|Query| Models[SQLAlchemy Models]
         Models -->|TCP| DB[(Neon PostgreSQL)]
     end
 
-    %% Key for clarity
-    style DB fill:#f9f,stroke:#333,stroke-width:2px
-    style API fill:#bbf,stroke:#333,stroke-width:2px
+    %% Key for clarity 
+    style DB fill:#50C232,stroke:#333,stroke-width:2px,color:#000000
+    style API fill:#29588A,stroke:#333,stroke-width:2px,color:#ffffff
 ```
 
 - **Consolidated Domains**: Recently, the `order_status` domain was fully consolidated into the `orders` domain to improve cohesion and reduce fragmentation.
