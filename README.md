@@ -59,7 +59,7 @@ fastapi-ecommerce/
 
 <div align="center">
 
-### Layered Architecture
+### **Layered Architecture**
 
 ```mermaid
 sequenceDiagram
@@ -85,8 +85,110 @@ sequenceDiagram
     API-->>-Client: HTTP 200/422
 ```
 
-</div>
 
+### **Database Tables Diagram**
+
+```mermaid
+erDiagram
+    CUSTOMERS ||--o{ ORDERS : places
+    CUSTOMERS ||--o{ REVIEWS : writes
+    PRODUCTS ||--o{ REVIEWS : receives
+    ORDERS ||--|{ ORDER_ITEMS : contains
+    PRODUCTS ||--o{ ORDER_ITEMS : included_in
+
+    CUSTOMERS {
+        int id PK
+        string email UK
+        string name
+        string country
+        string city
+        date signup_date
+        datetime created_at
+    }
+
+    ORDERS {
+        int id PK
+        int customer_id FK
+        float total_amount
+        string status
+        string shipping_address
+        datetime created_at
+        datetime updated_at
+    }
+
+    ORDER_ITEMS {
+        int id PK
+        int order_id FK
+        int product_id FK
+        int quantity
+        float price
+        datetime created_at
+    }
+
+    PRODUCTS {
+        int id PK
+        string name
+        text description
+        float price
+        int stock
+        string category
+        datetime created_at
+        datetime updated_at
+    }
+
+    REVIEWS {
+        int id PK
+        int product_id FK
+        int customer_id FK
+        int rating
+        text comment
+        datetime created_at
+        datetime updated_at
+    }
+```
+
+### **CI/CD Pipeline (GitHub Actions)**
+
+```mermaid
+graph TD
+    subgraph Local_Dev [Local Development]
+        Dev[Developer] -->|Work| Branch[Feature/Fix Branch]
+        Branch -->|git commit| PreCommit{Pre-commit Hooks}
+        PreCommit -->| <span style="color:#ff4d4d">Fail</span> | Dev
+        PreCommit -->|Pass| Commit[Internal Commit]
+    end
+
+    subgraph GitHub_Remote [GitHub Repository]
+        Commit -->|git push| RemoteBranch[Remote Feature Branch]
+        RemoteBranch -->|PR| DevBranch[Development Branch]
+        DevBranch -->|PR| MainBranch[Main Branch]
+        
+        subgraph CI_Pipeline [CI: GitHub Actions]
+            RemoteBranch -.-> CI[Run Ruff & Pytest]
+            DevBranch -.-> CI
+            MainBranch -.-> CI
+        end
+        
+        CI -->| <span style="color:#3DC277">Green</span> | Merge[Allow Merge]
+    end
+
+    subgraph CD_Pipeline [CD: Render]
+        MainBranch -->|Post-CI Success| CD[Automatic Deploy]
+        CD -->|Build| Render((Render Cloud))
+    end
+
+    %% Styling
+    style PreCommit fill:#29588A,stroke:#333
+    style CI fill:#29588A,stroke:#333
+    style Merge fill:#3DC277,stroke:#333,color:#000
+    style CD fill:#3DC277,stroke:#333,color:#000
+    style Render fill:#3D1065,stroke:#333,color:#fff
+
+    linkStyle 2 stroke:#ff4d4d,stroke-width:2px
+    linkStyle 10 stroke:#3DC277,stroke-width:2px
+```
+
+</div>
 
 ## Setup
 
