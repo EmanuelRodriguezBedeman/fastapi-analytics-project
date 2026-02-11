@@ -22,6 +22,17 @@ Rules:
 
 This application goes beyond standard CRUD operations by offering **distinct data insights** extracted directly from the ecommerce database. It adds significant value to the business by providing a **deep understanding of performance metrics**, enabling data-driven decision-making through quick and efficient API interpretations.
 
+## 📋 Table of Contents
+- [Features](#features)
+- [Project Structure](#project-structure)
+- [Architecture & Design](#architecture--design)
+- [Database Tables Diagram](#database-tables-diagram)
+- [Setup](#setup)
+- [API Usage Examples](#api-usage-examples)
+- [Running Tests](#running-tests)
+- [CI/CD & Engineering Standards](#cicd--engineering-standards)
+- [Branch Strategy](#branch-strategy)
+
 ## Features
 
 - **Agentic Development**: Optimized for AI Agents. Includes a **Navigational Context** map to guide file traversal and a dedicated `/docs` directory containing architecture, conventions, and context rules to direct AI agents effectively.
@@ -54,7 +65,7 @@ fastapi-ecommerce/
 ├── tests/               # Test suite
 ```
 
-## 🏗️ Architecture & Design
+## Architecture & Design
 
 
 <div align="center">
@@ -252,7 +263,7 @@ API documentation will be available at:
 - **Swagger UI**: `http://localhost:8000/docs`
 - **ReDoc**: `http://localhost:8000/redoc`
 
-## 📊 API Usage Examples
+## API Usage Examples
 
 ### 1. Order Analytics
 Get aggregated counts of orders grouped by their current status.
