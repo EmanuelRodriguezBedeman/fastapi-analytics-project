@@ -86,7 +86,7 @@ sequenceDiagram
 ```
 
 
-### **Database Tables Diagram**
+## **Database Tables Diagram**
 
 ```mermaid
 erDiagram
@@ -148,45 +148,6 @@ erDiagram
 ```
 
 ### **CI/CD Pipeline (GitHub Actions)**
-
-```mermaid
-graph TD
-    subgraph Local_Dev [Local Development]
-        Dev[Developer] -->|Work| Branch[Feature/Fix Branch]
-        Branch -->|git commit| PreCommit{Pre-commit Hooks}
-        PreCommit -->| <span style="color:#ff4d4d">Fail</span> | Dev
-        PreCommit -->|Pass| Commit[Internal Commit]
-    end
-
-    subgraph GitHub_Remote [GitHub Repository]
-        Commit -->|git push| RemoteBranch[Remote Feature Branch]
-        RemoteBranch -->|PR| DevBranch[Development Branch]
-        DevBranch -->|PR| MainBranch[Main Branch]
-        
-        subgraph CI_Pipeline [CI: GitHub Actions]
-            RemoteBranch -.-> CI[Run Ruff & Pytest]
-            DevBranch -.-> CI
-            MainBranch -.-> CI
-        end
-        
-        CI -->| <span style="color:#3DC277">Green</span> | Merge[Allow Merge]
-    end
-
-    subgraph CD_Pipeline [CD: Render]
-        MainBranch -->|Post-CI Success| CD[Automatic Deploy]
-        CD -->|Build| Render((Render Cloud))
-    end
-
-    %% Styling
-    style PreCommit fill:#29588A,stroke:#333
-    style CI fill:#29588A,stroke:#333
-    style Merge fill:#3DC277,stroke:#333,color:#000
-    style CD fill:#3DC277,stroke:#333,color:#000
-    style Render fill:#3D1065,stroke:#333,color:#fff
-
-    linkStyle 2 stroke:#ff4d4d,stroke-width:2px
-    linkStyle 10 stroke:#3DC277,stroke-width:2px
-```
 
 </div>
 
@@ -290,24 +251,33 @@ The `Dockerfile` is only used for the Render deployment.
 
 It just copies the /app folder to the container and runs the uvicorn server.
 
-## 🚀 Deployment Architecture & CI/CD
+## 🚀 CI/CD Pipeline & Deployment Architecture
 
 The project utilizes a fully automated pipeline to ensure code quality and seamless deployment.
 
+<div align="center">
+
 ```mermaid
 graph TD
-    User[Developer] -->|Git Commit| PreCommit[Pre-commit Hooks]
-    PreCommit -->|Validation| LocalTest[Run Tests & Lint Locally]
-    LocalTest -->|Push| GitHub[GitHub Repository]
-    GitHub -->|Trigger| Actions[GitHub Actions CI]
-    
-    subgraph CI_Pipeline [CI Pipeline]
-        Actions --> Lint[Ruff Linting]
-        Actions --> Test[Pytest Suite]
-        Actions --> Build[Build Check]
+
+    subgraph Local_Dev [Local Development]
+        User[Developer] -->|Git Commit| PreCommit[Pre-commit Hooks]
+        PreCommit -->|Validation| LocalTest[Runs Lint, Format & Tests Locally]
+        LocalTest -->|Push| GitHub[GitHub Repository]
     end
     
-    CI_Pipeline -->|Success| Deploy[Deploy Trigger]
+    GitHub -->|Trigger| Actions[GitHub Actions CI]
+    
+    subgraph GitHub_Repo [GitHub Repository]
+        subgraph CI_Pipeline [CI Pipeline]
+            Actions --> Lint[Ruff Linting]
+            Actions --> Test[Pytest Suite]
+            Actions --> Build[Build Check]
+        end
+        
+        CI_Pipeline -->| <span style="color:#3DC277">Success</span> | Deploy[Deploy Trigger]
+    end
+    
     Deploy -->|WebHook| Render[Render Platform]
     
     subgraph Production [Production Environment]
@@ -315,7 +285,52 @@ graph TD
         Docker -->|Run| Uvicorn[Uvicorn Server]
         Uvicorn -->|Connect| DB[(PostgreSQL DB)]
     end
+
+    linkStyle 7 stroke:#3DC277,stroke-width:2px
 ```
+
+## Branch Strategy
+
+```mermaid
+graph TD
+    subgraph Local_Dev [Local Development]
+        Dev[Developer] -->|Work| Branch[Feature/Fix Branch]
+        Branch -->|git commit| PreCommit{Pre-commit Hooks}
+        PreCommit -->| <span style="color:#ff4d4d">Fail</span> | Dev
+        PreCommit -->|Pass| Commit[Internal Commit]
+    end
+
+    subgraph GitHub_Remote [GitHub Repository]
+        Commit -->|git push| RemoteBranch[Remote Feature Branch]
+        RemoteBranch -->|PR| DevBranch[Development Branch]
+        DevBranch -->|PR| MainBranch[Main Branch]
+        
+        subgraph CI_Pipeline [CI: GitHub Actions]
+            RemoteBranch -.-> CI[Run Ruff & Pytest]
+            DevBranch -.-> CI
+            MainBranch -.-> CI
+        end
+        
+        CI -->| <span style="color:#3DC277">Green</span> | Merge[Allow Merge]
+    end
+
+    subgraph CD_Pipeline [CD: Render]
+        MainBranch -->|Post-CI Success| CD[Automatic Deploy]
+        CD -->|Build| Render((Render Cloud))
+    end
+
+    %% Styling
+    style PreCommit fill:#29588A,stroke:#333
+    style CI fill:#29588A,stroke:#333
+    style Merge fill:#3DC277,stroke:#333,color:#000
+    style CD fill:#3DC277,stroke:#333,color:#000
+    style Render fill:#3D1065,stroke:#333,color:#fff
+
+    linkStyle 2 stroke:#ff4d4d,stroke-width:2px
+    linkStyle 10 stroke:#3DC277,stroke-width:2px
+```
+
+</div>
 
 ### Pipeline Stages
 1.  **Local Pre-commit**: Before committing, `pre-commit` hooks runs `ruff` (formatting/linting) and `pytest` to catch errors early.
