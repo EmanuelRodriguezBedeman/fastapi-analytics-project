@@ -137,6 +137,3 @@ Thumbs.db
 # Project specific
 *.db
 *.sqlite
-
-# Playground
-scripts/
