@@ -195,15 +195,16 @@ graph TD
 ### Prerequisites
 
 - Python 3.11+
-- PostgreSQL 15+
 - Docker (optional)
+- Setup PostgreSQL DB in [Neon](https://neon.com/)
+- Setup a Web Service in [Render](https://render.com/)
 
 ### Installation
 
 1. Clone the repository:
 ```bash
-git clone <repository-url>
-cd fastapi-ecommerce
+git clone https://github.com/EmanuelRodriguezBedeman/fastapi-analytics-project.git analytics-api
+cd analytics-api
 ```
 
 2. Create a virtual environment:
@@ -212,6 +213,8 @@ python -m venv analytics-api
 source analytics-api/bin/activate  # On Windows: analytics-api\Scripts\activate
 ```
 
+> **Note:** If creating an environment with a different name, remember to update the `pre-commit` configuration in `pyproject.toml` to use the new environment name, on line 17.
+
 3. Install dependencies:
 ```bash
 pip install -r requirements.txt
@@ -219,17 +222,33 @@ pip install -r requirements-dev.txt
 ```
 
 4. Set up environment variables:
+- **macOS / Linux**:
 ```bash
 cp .env.example .env
-# Edit .env with your database credentials and settings
 ```
+- **Windows (Command Prompt)**:
+```cmd
+copy .env.example .env
+```
+- **Windows (PowerShell)**:
+```powershell
+cp .env.example .env
+```
+
+> **Note:** Edit `.env` with your database credentials and settings.
 
 5. Run database migrations:
 ```bash
 alembic upgrade head
 ```
 
-6. Start the development server:
+6. Populate the database (Optional):
+Generating realistic mock data for local testing and analytics.
+```bash
+python scripts/seeder.py
+```
+
+7. Start the development server:
 ```bash
 uvicorn app.main:app --reload
 ```
@@ -237,8 +256,8 @@ uvicorn app.main:app --reload
 The API will be available at `http://localhost:8000`
 
 API documentation will be available at:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
+- **Swagger UI**: `http://localhost:8000/docs`
+- **ReDoc**: `http://localhost:8000/redoc`
 
 ## Development Setup
 1. Activate environment: `conda activate analytics-api`
@@ -269,7 +288,7 @@ ruff check . --fix
 
 Build and run with Docker:
 
-```bash
+
 
 ## 🚀 Deployment Architecture & CI/CD
 
