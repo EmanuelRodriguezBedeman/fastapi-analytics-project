@@ -85,6 +85,24 @@ sequenceDiagram
     API-->>-Client: HTTP 200/422
 ```
 
+</div>
+
+### Request-Response Lifecycle
+1.  **Request & Validation**: FastAPI receives the HTTP request, and the router uses Pydantic schemas to ensure data integrity and correct typing before any business logic is executed.
+2.  **Data Access Layer**: Routers interact with repositories to fetch or persist data using SQLAlchemy models, abstracting the database interaction and SQL complexity.
+3.  **Serialization & Response**: The returned database models are converted back into clean Pydantic schemas, ensuring the client receives exactly what the API contract specifies (filters sensitive data, formats fields).
+
+**Benefits:**
+- **Predictability**: Strictly typed schemas prevent unexpected data formats from entering or leaving the system, reducing runtime errors.
+- **Separation of Concerns**: Each layer (Router, Schema, Repo, DB) has a single responsibility, making the codebase easier to test, debug, and maintain.
+- **Auto-Documentation**: Integration with Pydantic allows FastAPI to generate interactive Swagger/ReDoc documentation automatically.
+
+**Problems Solved:**
+- **Data Corruption**: Prevents invalid or malicious data from reaching the database by filtering at the schema level.
+- **Tight Coupling**: Decouples the API's external interface (Schemas) from the underlying database structure (Models), allowing schema changes without breaking the DB.
+- **Manual Mapping Boilerplate**: Automated serialization removes the need for manual object-to-JSON mapping, reducing human error.
+
+<div align="center">
 
 ## **Database Tables Diagram**
 
@@ -146,8 +164,6 @@ erDiagram
         datetime updated_at
     }
 ```
-
-### **CI/CD Pipeline (GitHub Actions)**
 
 </div>
 
