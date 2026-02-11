@@ -286,9 +286,9 @@ ruff check . --fix
 
 ## Docker
 
-Build and run with Docker:
+The `Dockerfile` is only used for the Render deployment.
 
-
+It just copies the /app folder to the container and runs the uvicorn server.
 
 ## 🚀 Deployment Architecture & CI/CD
 
