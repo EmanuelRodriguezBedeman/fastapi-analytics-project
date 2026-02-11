@@ -354,9 +354,98 @@ curl http://localhost:8000/orders/50
 
 ## Running Tests
 
+Automated tests ensure the API behaves as expected across all layers.
+
 ```bash
 pytest tests/ -v
 ```
+
+### Test Execution Examples
+
+#### 1. Integration: Product List (✅ PASS)
+Reflects: `tests/test_products.py`
+Confirms that the main product catalog is reachable and correctly paginated.
+
+<details>
+<summary>View Test Case</summary>
+
+**Request**:
+```bash
+curl http://localhost:8000/products/?skip=0&limit=1
+```
+
+**Response (200 OK)**:
+```json
+[
+    {
+        "name": "Jackson-Garcia Running Shoes",
+        "description": "Ergonomic design providing comfort during extended use.",
+        "price": 381.82,
+        "stock": 79,
+        "category": "Sports",
+        "id": 251,
+        "created_at": "2026-01-28T19:58:48.360618Z",
+        "updated_at": null
+    }
+]
+```
+</details>
+
+#### 2. Analytics: Order Statuses (❌ FAIL)
+Reflects: `tests/test_orders.py`
+Demonstrates a validation failure when an invalid status is provided in the query string.
+
+<details>
+<summary>View Test Case</summary>
+
+**Request**:
+```bash
+curl "http://localhost:8000/orders/statuses?order_status=pendig"
+```
+
+**Response (422 Unprocessable Entity)**:
+```json
+{
+  "detail": [
+    {
+      "type": "enum",
+      "loc": ["query", "order_status"],
+      "msg": "Input should be 'pending', 'processing', 'shipped', 'delivered' or 'cancelled'",
+      "input": "pendig",
+      "ctx": {
+        "expected": "'pending', 'processing', 'shipped', 'delivered' or 'cancelled'"
+      }
+    }
+  ]
+}
+```
+
+**Why it fails?**
+The `order_status` parameter is strictly validated against the `OrderStatus` Enum. As shown in the request, a typo ("pendig" instead of "pending") triggers an automatic 422 error, ensuring that the analytical engine only processes valid states defined in the domain model.
+</details>
+
+#### 3. Detail: Resource Not Found (❌ FAIL)
+Reflects: [`test_get_product`](tests/test_products.py)
+Shows what happens when a test attempts to fetch a specific record that does not exist.
+
+<details>
+<summary>View Test Case</summary>
+
+**Request**:
+```bash
+curl http://localhost:8000/products/99999
+```
+
+**Response (404 Not Found)**:
+```json
+{
+  "detail": "Product not found"
+}
+```
+
+**Why it fails?**
+While `test_get_product` is designed to find valid dynamic IDs, it will fail if the requested `product_id` is missing. This validates that the system correctly handles empty or missing resources without crashing.
+</details>
 
 ## CI/CD & Engineering Standards
 
