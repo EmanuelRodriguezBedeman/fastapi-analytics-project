@@ -16,6 +16,7 @@ app = FastAPI(
     description=f"A modern analytics API built with {settings.PROJECT_NAME}",
     version="0.1.0",
     dependencies=[Depends(rate_limit_dependency)],
+    swagger_ui_parameters={"defaultModelsExpandDepth": 0},
 )
 
 
@@ -27,13 +28,13 @@ app.include_router(reviews.router, prefix="/reviews", tags=["reviews"])
 app.include_router(order_items.router, prefix="/order_items", tags=["order_items"])
 
 
-@app.get("/")
+@app.get("/", include_in_schema=False)
 async def root():
     """Root endpoint"""
     return {"message": f"Welcome to {settings.PROJECT_NAME}"}
 
 
-@app.get("/health", tags=["Health Check"])
+@app.get("/health", tags=["Health Check"], include_in_schema=False)
 async def check_db_health(db: Session = Depends(get_db)):
     """
     Health check endpoint that verifies database connectivity.
