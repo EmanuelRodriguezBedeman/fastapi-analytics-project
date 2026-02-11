@@ -1,18 +1,17 @@
 import os
 import random
 import sys
-from datetime import datetime
+
 from faker import Faker
 from sqlalchemy.orm import Session
-from sqlalchemy.exc import IntegrityError
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from app.database import SessionLocal, engine
 from app.models.customer import Customer
-from app.models.product import Product
 from app.models.order import Order, OrderStatus
 from app.models.order_item import OrderItem
+from app.models.product import Product
 from app.models.review import Review
 
 fake = Faker()
@@ -109,7 +108,7 @@ def create_customers(db: Session, num: int = 200):
                 signup_date=fake.date_between(start_date="-2y", end_date="today"),
             )
             db.add(customer)
-        except:
+        except Exception:
             db.rollback()
             continue
 
