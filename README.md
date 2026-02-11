@@ -289,6 +289,21 @@ graph TD
     linkStyle 7 stroke:#3DC277,stroke-width:2px
 ```
 
+</div>
+
+### Pipeline Stages
+1.  **Local Pre-commit**: Before committing, `pre-commit` hooks runs `ruff` (formatting/linting) and `pytest` to catch errors early.
+2.  **Continuous Integration (GitHub Actions)**:
+    - Automatically runs on every push/PR.
+    - Executes `ruff` for code style enforcement.
+    - Runs the full test suite with `pytest`.
+3.  **Continuous Deployment (Render)**:
+    - Automatically triggers when the CI pipeline passes on the `main` branch.
+    - Builds the Docker image.
+    - Deploys the new version with zero-downtime.
+
+<div align="center">
+
 ## Branch Strategy
 
 ```mermaid
@@ -320,8 +335,8 @@ graph TD
     %% Styling
     style CI1 fill:#29588A,stroke:#333
     style CI2 fill:#29588A,stroke:#333
-    style Merge1 fill:#3DC277,stroke:#333
-    style Merge2 fill:#3DC277,stroke:#333
+    style Merge1 fill:#3DC277,stroke:#333, color: #000
+    style Merge2 fill:#3DC277,stroke:#333, color: #000
 
     linkStyle 2 stroke:#3DC277,stroke-width:2px
     linkStyle 3 stroke:#3DC277,stroke-width:2px
@@ -333,13 +348,20 @@ graph TD
 
 </div>
 
-### Pipeline Stages
-1.  **Local Pre-commit**: Before committing, `pre-commit` hooks runs `ruff` (formatting/linting) and `pytest` to catch errors early.
-2.  **Continuous Integration (GitHub Actions)**:
-    - Automatically runs on every push/PR.
-    - Executes `ruff` for code style enforcement.
-    - Runs the full test suite with `pytest`.
-3.  **Continuous Deployment (Render)**:
-    - Automatically triggers when the CI pipeline passes on the `main` branch.
-    - Builds the Docker image.
-    - Deploys the new version with zero-downtime.
+### Git Flow Strategy
+1.  **Feature-driven Development**: All new features and fixes are developed in isolated branches created from `development`.
+2.  **Double-gate Validation**:
+    - **Step 1**: Feature branches must pass CI before merging into `development`.
+    - **Step 2**: `development` must pass the full test suite again before merging into `main`.
+3.  **Protected Production**: The `main` branch always represents a stable, deployable version of the application.
+
+**Benefits:**
+- **Stability**: Production code is never touched directly, reducing the risk of accidental breakage.
+- **Code Quality**: Forced PR reviews and automated CI checks ensure high standards across all branches.
+- **Parallel Work**: Multiple developers can work on different features simultaneously without interfering with each other.
+
+**Problems Solved:**
+- **Broken Production**: Prevents committing broken code directly to the live environment.
+- **Merge Conflicts**: Small, frequent PRs to `development` make conflict resolution much more manageable.
+- **Untested Releases**: Guarantees that every line of code in `main` has been verified at least twice.
+
