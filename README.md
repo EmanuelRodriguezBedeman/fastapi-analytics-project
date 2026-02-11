@@ -293,41 +293,42 @@ graph TD
 
 ```mermaid
 graph TD
-    subgraph Local_Dev [Local Development]
-        Dev[Developer] -->|Work| Branch[Feature/Fix Branch]
-        Branch -->|git commit| PreCommit{Pre-commit Hooks}
-        PreCommit -->| <span style="color:#ff4d4d">Fail</span> | Dev
-        PreCommit -->|Pass| Commit[Internal Commit]
+    DevBranch[Development Branch]
+    MainBranch[Main Branch]
+
+    %% Branching
+    DevBranch -->|git checkout -b| NewBranch[Feature/Fix Branch]
+
+    %% First Stage: Feature to Dev
+    subgraph Feature_to_Dev [Merge to Development]
+        NewBranch -->|Pull Request| CI1[GitHub Actions CI]
+        CI1 -->|Success| Merge1[Approve & Merge]
+        Merge1 --> DevBranch
     end
 
-    subgraph GitHub_Remote [GitHub Repository]
-        Commit -->|git push| RemoteBranch[Remote Feature Branch]
-        RemoteBranch -->|PR| DevBranch[Development Branch]
-        DevBranch -->|PR| MainBranch[Main Branch]
-        
-        subgraph CI_Pipeline [CI: GitHub Actions]
-            RemoteBranch -.-> CI[Run Ruff & Pytest]
-            DevBranch -.-> CI
-            MainBranch -.-> CI
-        end
-        
-        CI -->| <span style="color:#3DC277">Green</span> | Merge[Allow Merge]
+    %% Second Stage: Dev to Main
+    subgraph Dev_to_Main [Release to Main]
+        DevBranch -->|Pull Request| CI2[GitHub Actions CI]
+        CI2 -->|Success| Merge2[Approve & Merge]
+        Merge2 --> MainBranch
     end
 
-    subgraph CD_Pipeline [CD: Render]
-        MainBranch -->|Post-CI Success| CD[Automatic Deploy]
-        CD -->|Build| Render((Render Cloud))
-    end
+    %% Failure paths
+    CI1 --| <span style="color:#ff4d4d">Fails</span> |--> NewBranch
+    CI2 --| <span style="color:#ff4d4d">Fails</span> |--> DevBranch
 
     %% Styling
-    style PreCommit fill:#29588A,stroke:#333
-    style CI fill:#29588A,stroke:#333
-    style Merge fill:#3DC277,stroke:#333,color:#000
-    style CD fill:#3DC277,stroke:#333,color:#000
-    style Render fill:#3D1065,stroke:#333,color:#fff
+    style CI1 fill:#29588A,stroke:#333
+    style CI2 fill:#29588A,stroke:#333
+    style Merge1 fill:#3DC277,stroke:#333
+    style Merge2 fill:#3DC277,stroke:#333
 
-    linkStyle 2 stroke:#ff4d4d,stroke-width:2px
-    linkStyle 10 stroke:#3DC277,stroke-width:2px
+    linkStyle 2 stroke:#3DC277,stroke-width:2px
+    linkStyle 3 stroke:#3DC277,stroke-width:2px
+    linkStyle 5 stroke:#3DC277,stroke-width:2px
+    linkStyle 6 stroke:#3DC277,stroke-width:2px
+    linkStyle 7 stroke:#ff4d4d,stroke-width:2px
+    linkStyle 8 stroke:#ff4d4d,stroke-width:2px
 ```
 
 </div>
