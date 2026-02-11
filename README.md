@@ -33,7 +33,7 @@ This application goes beyond standard CRUD operations by offering **distinct dat
 - **Business Analytics**: Custom endpoints for real-time data insights and dashboard metrics.
 - **Pytest**: Comprehensive test suite covering every endpoint to ensure reliability, including **System Health** checks for Neon database connectivity.
 - **Ruff**: Ultra-fast linter and formatter to enforce code quality and style.
-- **Pre-commit**: Local git hooks that automatically run *Ruff* (lint/format) and *Pytest* before every commit to ensure code quality.
+- **Pre-commit**: Local git hooks that automatically run *Ruff* (lint/format) and *Pytest* before every commit to ensure code quality. _(Only if there's a modification inside `/app`)_
 - **Docker**: Containerization platform for consistent development and production environments.
 - **GitHub Actions**: Automates *CI/CD pipelines* for testing, building, and deployment.
 - **Render**: Unified cloud platform for seamless application hosting and zero-downtime deploys.
