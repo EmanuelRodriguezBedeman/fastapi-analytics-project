@@ -262,7 +262,7 @@ API documentation will be available at:
 ## Development Setup
 1. Activate environment: `conda activate analytics-api`
 2. Install pre-commit: `pre-commit install`
-3. Commit as usual (pre-commit will use your active env)
+3. Commit as usual (pre-commit will use your active env) _(Only if there's a modification inside `/app`)_
 
 ## Running Tests
 
