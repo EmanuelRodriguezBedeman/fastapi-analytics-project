@@ -252,6 +252,86 @@ API documentation will be available at:
 - **Swagger UI**: `http://localhost:8000/docs`
 - **ReDoc**: `http://localhost:8000/redoc`
 
+## 📊 API Usage Examples
+
+### 1. Product Details
+Retrieve a specific product's information including price, stock, and category.
+**Endpoint**: `GET /products/{id}`
+
+<details>
+<summary>View Example</summary>
+
+**Request**:
+```http
+GET /products/1 HTTP/1.1
+Host: localhost:8000
+```
+
+**Response**:
+```json
+{
+  "id": 1,
+  "name": "Sony Headphones v5",
+  "description": "Premium noise-canceling headphones with 30h battery life.",
+  "price": 299.99,
+  "stock": 45,
+  "category": "Electronics",
+  "created_at": "2024-02-10T14:30:00Z"
+}
+```
+</details>
+
+### 2. Order Analytics
+Get aggregated counts of orders grouped by their current status.
+**Endpoint**: `GET /orders/statuses`
+
+<details>
+<summary>View Example</summary>
+
+**Request**:
+```http
+GET /orders/statuses HTTP/1.1
+Host: localhost:8000
+```
+
+**Response**:
+```json
+[
+  { "status": "delivered", "count": 1250 },
+  { "status": "shipped", "count": 313 },
+  { "status": "pending", "count": 153 },
+  { "status": "cancelled", "count": 42 }
+]
+```
+</details>
+
+### 3. Customer Profile
+Fetch basic customer information and signup details.
+**Endpoint**: `GET /customers/{id}`
+
+<details>
+<summary>View Example</summary>
+
+**Request**:
+```http
+GET /customers/101 HTTP/1.1
+Host: localhost:8000
+```
+
+**Response**:
+```json
+{
+  "id": 101,
+  "name": "Jane Doe",
+  "email": "jane.doe@example.com",
+  "country": "USA",
+  "city": "New York",
+  "signup_date": "2023-05-15",
+  "created_at": "2023-05-15T10:00:00Z"
+}
+```
+</details>
+
 ## Development Setup
 1. Activate environment: `conda activate analytics-api`
 2. Install pre-commit: `pre-commit install`
