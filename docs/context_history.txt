@@ -1,0 +1,74 @@
+# CONTEXT HISTORY & ARCHITECTURAL DECISIONS
+# Intended Audience: Future AI Agents
+# Last Updated: 2026-02-09
+
+## 1. PROJECT IDENTITY
+- **Name**: FastAPI E-commerce Analytics API
+- **Goal**: Read-Only Analytics API for e-commerce data.
+- **Key Directive**: NO CUD operations (Create/Update/Delete). All data mutation happens elsewhere.
+- **Tech Stack**:
+  - **Framework**: FastAPI (Async)
+  - **Database**: PostgreSQL (Neon)
+  - **ORM**: SQLAlchemy 2.0 (Async Engine)
+  - **Validation**: Pydantic V2
+  - **Testing**: Pytest + TestClient
+  - **Linting**: Ruff (Formatter + Linter)
+  - **Package Manager**: Conda (`analytics-api` env)
+
+## 2. ARCHITECTURAL PATTERNS
+- **Domain-Driven Design (DDD)**:
+  - Modules are grouped by domain (Orders, Products, Customers).
+  - **Consolidation Rule**: Related sub-domains must be merged (e.g., `order_status` merged into `orders`).
+- **Layered Architecture**:
+  - `routers/`: HTTP handling, dependency injection.
+  - `services/`: Business logic (currently minimal/unused).
+  - `repositories/`: Direct DB access, query construction.
+  - `schemas/`: Pydantic models (IO contracts).
+  - `models/`: SQLAlchemy ORM definitions.
+- **Strict Separation**:
+  - Database Models != Pydantic Schemas.
+  - `from_attributes=True` (formerly `orm_mode`) is mandatory for response schemas.
+
+## 3. KEY FEATURES IMPLEMENTATION
+- **Analytics Endpoints**:
+  - Implementation: SQLAlchemy `func.count` + `group_by`.
+  - Location: Consolidated within parent domain routers (e.g., `/orders/statuses`).
+  - Constraint: Analytics paths must be defined BEFORE dynamic ID paths (`/statuses` before `/{id}`) to avoid 422 errors.
+- **Rate Limiting**:
+  - Type: In-memory Token Bucket.
+  - Implementation: Global dependency injection in `main.py`.
+- **Testing Strategy**:
+  - Scope: Integration tests using `TestClient`.
+  - Data: Reads real data from Dev DB (no mocks for DB).
+  - Pattern: Fetch-then-Test (get list -> extract ID -> get detail).
+
+## 4. INFRASTRUCTURE & CI/CD
+- **Pipeline**: GitHub Actions.
+- **Steps**:
+  1. Lint (Ruff)
+  2. Type Check (Mypy) - *Note: Currently optional/warn-only in some workflows.*
+  3. Test (Pytest)
+- **Deployment**: Render (triggered via Webhook on pass).
+- **Environment**:
+  - Local: Conda (`analytics-api`)
+  - DB: Neon (Branching: `dev` for tests, `main` for prod).
+
+## 5. RECENT CHANGES & LOG
+- **[2026-02-10] Documentation Refactor**:
+  - Updated README with detailed tech stack, architecture diagram (Mermaid), and deployment pipeline.
+  - Added specific mentions of Pytest coverage and System Health checks.
+- **[2026-02-09] Refactor: Order Status Consolidation**:
+  - Merged `order_status` domain into `orders`.
+  - Reason: High cohesion, reduced file sprawl.
+  - Action: Deleted `app/routers/orders_status.py`, `app/repositories/order_status_repository.py`.
+- **[2026-02-09] Fix: 422 Path Conflict**:
+  - Issue: `/orders/statuses` was shadowed by `/orders/{id}`.
+  - Fix: Reordered router definitions.
+- **[2026-02-08] Feat: Rate Limiting**:
+  - Global middleware added to prevent abuse.
+
+## 6. CRITICAL RULES FOR AGENTS
+1. **Do not create separate modules for small sub-resources** (like `order_status`). Merge them into the parent domain.
+2. **Always run `ruff check --fix` and `ruff format`** after editing code.
+3. **Verify tests** locally before confirming tasks.
+4. **Context Awareness**: Use `from_attributes=True` for all response schemas mapping to ORM objects.
