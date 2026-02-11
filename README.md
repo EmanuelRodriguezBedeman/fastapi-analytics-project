@@ -167,6 +167,22 @@ erDiagram
 
 </div>
 
+### Relational Database Design
+1.  **Core Entities**: The system tracks four main entities: `Customers`, `Products`, `Orders`, and `Reviews`, with `Order_Items` acting as a junction table to manage the many-to-many relationship between orders and products.
+2.  **Referential Integrity**: Strict Foreign Key (FK) constraints ensure that orders and reviews are always linked to existing customers and products, maintaining a consistent state across the platform.
+3.  **Auditability**: Every table includes automated timestamping (`created_at`, `updated_at`), providing a clear audit trail for every transaction and interaction.
+
+**Benefits:**
+- **Data Consistency**: Relational constraints prevent "orphan" data, ensuring that an order cannot exist without a customer.
+- **Scalability**: Normalized table structures minimize data redundancy, optimizing storage and query performance for analytical tasks.
+- **Reporting Clarity**: The clear structure allows for complex SQL queries to derive business insights (e.g., average product rating by category).
+
+**Problems Solved:**
+- **Data Redundancy**: Prevents duplicating product or customer details in every order, reducing the risk of inconsistent information.
+- **Anomalies**: Avoids update and deletion anomalies through proper normalization (3NF approach).
+- **History Tracking**: Solves the problem of losing historical data by using dedicated audit fields on every record.
+
+
 ## Setup
 
 ### Prerequisites
