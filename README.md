@@ -263,30 +263,11 @@ API documentation will be available at:
 pytest tests/ -v
 ```
 
-## Development Workflow
+## CI/CD & Engineering Standards
 
-This project uses [Ruff](https://docs.astral.sh/ruff/) for linting/formatting. Configuration is centralized in `pyproject.toml`.
+This project utilizes a fully automated pipeline alongside manual quality tools to ensure high standards and seamless deployment.
 
-Format code:
-```bash
-ruff format .
-```
-
-Lint code (fix auto-fixable issues):
-```bash
-ruff check . --fix
-```
-
-## Docker
-
-The `Dockerfile` is only used for the Render deployment.
-
-It just copies the /app folder to the container and runs the uvicorn server.
-
-## 🚀 CI/CD Pipeline & Deployment Architecture
-
-The project utilizes a fully automated pipeline to ensure code quality and seamless deployment.
-
+### CI/CD Pipeline Architecture
 <div align="center">
 
 ```mermaid
@@ -331,8 +312,7 @@ graph TD
     - Runs the full test suite with `pytest`.
 3.  **Continuous Deployment (Render)**:
     - Automatically triggers when the CI pipeline passes on the `main` branch.
-    - Builds the Docker image.
-    - Deploys the new version with zero-downtime.
+    - **Docker-based Build**: The `Dockerfile` copies the `/app` folder to the container and runs the Uvicorn server for seamless production deployment.
 
 <div align="center">
 
