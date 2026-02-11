@@ -254,34 +254,7 @@ API documentation will be available at:
 
 ## 📊 API Usage Examples
 
-### 1. Product Details
-Retrieve a specific product's information including price, stock, and category.
-**Endpoint**: `GET /products/{id}`
-
-<details>
-<summary>View Example</summary>
-
-**Request**:
-```http
-GET /products/1 HTTP/1.1
-Host: localhost:8000
-```
-
-**Response**:
-```json
-{
-  "id": 1,
-  "name": "Sony Headphones v5",
-  "description": "Premium noise-canceling headphones with 30h battery life.",
-  "price": 299.99,
-  "stock": 45,
-  "category": "Electronics",
-  "created_at": "2024-02-10T14:30:00Z"
-}
-```
-</details>
-
-### 2. Order Analytics
+### 1. Order Analytics
 Get aggregated counts of orders grouped by their current status.
 **Endpoint**: `GET /orders/statuses`
 
@@ -289,45 +262,87 @@ Get aggregated counts of orders grouped by their current status.
 <summary>View Example</summary>
 
 **Request**:
-```http
-GET /orders/statuses HTTP/1.1
-Host: localhost:8000
+```bash
+curl http://localhost:8000/orders/statuses
 ```
 
 **Response**:
 ```json
 [
-  { "status": "delivered", "count": 1250 },
-  { "status": "shipped", "count": 313 },
-  { "status": "pending", "count": 153 },
-  { "status": "cancelled", "count": 42 }
+    {
+        "status": "shipped",
+        "count": 313
+    },
+    {
+        "status": "pending",
+        "count": 153
+    },
+    {
+        "status": "cancelled",
+        "count": 153
+    },
+    {
+        "status": "delivered",
+        "count": 2159
+    },
+    {
+        "status": "processing",
+        "count": 224
+    }
 ]
 ```
 </details>
 
-### 3. Customer Profile
-Fetch basic customer information and signup details.
-**Endpoint**: `GET /customers/{id}`
+### 2. Product Reviews
+Retrieve reviews for a specific product using query parameters for pagination and filtering.
+**Endpoint**: `GET /reviews/`
 
 <details>
 <summary>View Example</summary>
 
 **Request**:
-```http
-GET /customers/101 HTTP/1.1
-Host: localhost:8000
+```bash
+curl "http://localhost:8000/reviews/?skip=0&limit=1&product_id=260"
+```
+
+**Response**:
+```json
+[
+    {
+        "product_id": 260,
+        "customer_id": 643,
+        "rating": 3,
+        "comment": "Does the job.",
+        "id": 67,
+        "created_at": "2025-05-10T18:49:28Z",
+        "updated_at": null
+    }
+]
+```
+</details>
+
+### 3. Order Details
+Retrieve specific order information including shipping address and current status.
+**Endpoint**: `GET /orders/{id}`
+
+<details>
+<summary>View Example</summary>
+
+**Request**:
+```bash
+curl http://localhost:8000/orders/50
 ```
 
 **Response**:
 ```json
 {
-  "id": 101,
-  "name": "Jane Doe",
-  "email": "jane.doe@example.com",
-  "country": "USA",
-  "city": "New York",
-  "signup_date": "2023-05-15",
-  "created_at": "2023-05-15T10:00:00Z"
+    "shipping_address": "15689 Lewis Loaf Suite 049\nHayesfort, CT 62687",
+    "id": 50,
+    "customer_id": 550,
+    "total_amount": 644.99,
+    "status": "delivered",
+    "created_at": "2025-03-07T12:06:10Z",
+    "updated_at": "2026-01-28T20:20:24.709671Z"
 }
 ```
 </details>
