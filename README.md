@@ -70,6 +70,26 @@ fastapi-ecommerce/
 
 <div align="center">
 
+### General Architecture
+
+```mermaid
+flowchart TD
+    subgraph Neon ["Neon PostgreSQL"]
+        Database[("Ecommerce data")]
+    end
+
+    subgraph Local ["Local / Github"]
+        LocalAPI["API (Local)"]
+    end
+
+    subgraph Render ["Production Environment"]
+        RenderAPI["API (Render)"]
+    end
+
+    LocalAPI <--> |"Development Branch"| Database
+    RenderAPI <--> |"Production Branch"| Database
+```
+
 ### **Layered Architecture**
 
 ```mermaid
