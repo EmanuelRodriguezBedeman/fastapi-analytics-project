@@ -73,7 +73,12 @@ fastapi-ecommerce/
 ### General Architecture
 
 ```mermaid
-flowchart TD
+flowchart LR
+
+    subgraph ClientEnv ["Client Environment"]
+        Client["User"]
+    end
+
     subgraph Neon ["Neon PostgreSQL"]
         Database[("Ecommerce data")]
     end
@@ -86,6 +91,8 @@ flowchart TD
         RenderAPI["API (Render)"]
     end
 
+    Client <--> |"Request/Response"| Local
+    Client <--> |"Request/Response"| Render
     LocalAPI <--> |"Development Branch"| Database
     RenderAPI <--> |"Production Branch"| Database
 ```
