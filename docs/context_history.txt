@@ -1,74 +1,76 @@
 # CONTEXT HISTORY & ARCHITECTURAL DECISIONS
 # Intended Audience: Future AI Agents
-# Last Updated: 2026-02-09
+# Last Updated: 2026-02-16
 
 ## 1. PROJECT IDENTITY
 - **Name**: FastAPI E-commerce Analytics API
-- **Goal**: Read-Only Analytics API for e-commerce data.
-- **Key Directive**: NO CUD operations (Create/Update/Delete). All data mutation happens elsewhere.
+- **Goal**: Read-Only Analytics API for e-commerce data, providing business intelligence (Customer behavior, Product performance, Operational visibility).
+- **Key Directive**: Primarily read-only for analytics. No CUD operations on core e-commerce data.
 - **Tech Stack**:
   - **Framework**: FastAPI (Async)
-  - **Database**: PostgreSQL (Neon)
+  - **Database**: PostgreSQL (Neon Serverless)
   - **ORM**: SQLAlchemy 2.0 (Async Engine)
   - **Validation**: Pydantic V2
   - **Testing**: Pytest + TestClient
-  - **Linting**: Ruff (Formatter + Linter)
+  - **Linting**: Ruff (Formatter + Linter) + Pre-commit
   - **Package Manager**: Conda (`analytics-api` env)
 
 ## 2. ARCHITECTURAL PATTERNS
 - **Domain-Driven Design (DDD)**:
-  - Modules are grouped by domain (Orders, Products, Customers).
-  - **Consolidation Rule**: Related sub-domains must be merged (e.g., `order_status` merged into `orders`).
+  - Modules grouped by domain (Orders, Products, Customers, Reviews).
+  - **Consolidation Rule**: Related sub-domains must be merged (e.g., `order_status` logic is part of `orders`).
 - **Layered Architecture**:
-  - `routers/`: HTTP handling, dependency injection.
-  - `services/`: Business logic (currently minimal/unused).
-  - `repositories/`: Direct DB access, query construction.
-  - `schemas/`: Pydantic models (IO contracts).
-  - `models/`: SQLAlchemy ORM definitions.
-- **Strict Separation**:
-  - Database Models != Pydantic Schemas.
-  - `from_attributes=True` (formerly `orm_mode`) is mandatory for response schemas.
+  - `routers/`: HTTP handling, metadata, dependency injection.
+  - `repositories/`: Database access layer (queries, aggregates).
+  - `schemas/`: Pydantic models (Input/Output contracts).
+  - `models/`: SQLAlchemy ORM definitions (Database mapping).
+- **Relational Integrity**:
+  - Strict FK constraints between Customers, Products, Orders, and Reviews.
+  - Mermaid ERD available in README.
 
-## 3. KEY FEATURES IMPLEMENTATION
+## 3. KEY FEATURES & IMPLEMENTATION
 - **Analytics Endpoints**:
-  - Implementation: SQLAlchemy `func.count` + `group_by`.
-  - Location: Consolidated within parent domain routers (e.g., `/orders/statuses`).
-  - Constraint: Analytics paths must be defined BEFORE dynamic ID paths (`/statuses` before `/{id}`) to avoid 422 errors.
+  - Uses SQLAlchemy `func.count` + `group_by`.
+  - Location: Parent domain routers (e.g., `/orders/statuses`).
+  - **Path Precedence**: Analytics paths (static) must be declared BEFORE dynamic ID paths (`/statuses` before `/{id}`) to prevent path shadowing errors (HTTP 422).
+- **Documentation UX**:
+  - **Swagger UI**: Configured with `defaultModelsExpandDepth: 0` to collapse technical schemas by default.
+  - **Hidden Routes**: Internal/Health routes (`/`, `/health`) use `include_in_schema=False` to declutter public docs.
 - **Rate Limiting**:
-  - Type: In-memory Token Bucket.
-  - Implementation: Global dependency injection in `main.py`.
-- **Testing Strategy**:
-  - Scope: Integration tests using `TestClient`.
-  - Data: Reads real data from Dev DB (no mocks for DB).
-  - Pattern: Fetch-then-Test (get list -> extract ID -> get detail).
+  - Implementation: Global dependency in `main.py` using a Token Bucket pattern.
+- **Seeding**:
+  - Script: `scripts/seeder.py` using `Faker`.
+  - Linting: Enforced Ruff standards (no bare excepts, sorted imports).
 
 ## 4. INFRASTRUCTURE & CI/CD
-- **Pipeline**: GitHub Actions.
-- **Steps**:
-  1. Lint (Ruff)
-  2. Type Check (Mypy) - *Note: Currently optional/warn-only in some workflows.*
-  3. Test (Pytest)
-- **Deployment**: Render (triggered via Webhook on pass).
-- **Environment**:
-  - Local: Conda (`analytics-api`)
-  - DB: Neon (Branching: `dev` for tests, `main` for prod).
+- **Pipeline**: GitHub Actions (Lint -> Test -> Build).
+- **Database Branching**:
+  - `dev` branch: Used for local development and testing.
+  - `main` branch: Used for Cloud/Production (Render).
+- **Deployment Architecture**:
+  - Local API connects to Neon `dev` branch.
+  - Render API (Production) connects to Neon `main` branch.
+  - Diagram: Flowchart TD in README.
 
-## 5. RECENT CHANGES & LOG
-- **[2026-02-10] Documentation Refactor**:
-  - Updated README with detailed tech stack, architecture diagram (Mermaid), and deployment pipeline.
-  - Added specific mentions of Pytest coverage and System Health checks.
+## 5. RECENT CHANGES LOG (Feb 2026)
+- **[2026-02-12] Documentation Final Polish**:
+  - Added Table of Contents with functional slugs.
+  - Added Detailed Test Execution Examples linked to `tests/`.
+  - Full API Metadata (Summary, Description, Contact, License) registered in `app/main.py`.
+  - Version bump to `1.0.0`.
+- **[2026-02-11] UI/UX Refinement**:
+  - Collapsed Schemas in Swagger and hidden Root/Health endpoints from OpenAPI spec.
+  - Fixed `scripts/seeder.py` linting (I001, F401, E722).
+- **[2026-02-10] Architectural Diagrams**:
+  - Added Mermaid Sequence Diagrams, ERD, and Git Branching Strategy to README.
 - **[2026-02-09] Refactor: Order Status Consolidation**:
   - Merged `order_status` domain into `orders`.
-  - Reason: High cohesion, reduced file sprawl.
-  - Action: Deleted `app/routers/orders_status.py`, `app/repositories/order_status_repository.py`.
-- **[2026-02-09] Fix: 422 Path Conflict**:
-  - Issue: `/orders/statuses` was shadowed by `/orders/{id}`.
-  - Fix: Reordered router definitions.
-- **[2026-02-08] Feat: Rate Limiting**:
-  - Global middleware added to prevent abuse.
+  - Fixed 422 Path Conflict in `orders.py` by reordering routes.
 
 ## 6. CRITICAL RULES FOR AGENTS
-1. **Do not create separate modules for small sub-resources** (like `order_status`). Merge them into the parent domain.
-2. **Always run `ruff check --fix` and `ruff format`** after editing code.
-3. **Verify tests** locally before confirming tasks.
-4. **Context Awareness**: Use `from_attributes=True` for all response schemas mapping to ORM objects.
+1. **Domain Cohesion**: Do not create separate modules for sub-resources. Merge them into the parent domain (e.g., reviews relate to products/customers).
+2. **Schema mapping**: `from_attributes=True` is mandatory for response schemas mapping to SQLAlchemy models.
+3. **Route Order**: Always place static analytics paths ABOVE dynamic ID paths in routers.
+4. **Clean Code**: Post-edit steps: `ruff check --fix` and `ruff format`.
+5. **Transparency**: All architecture changes must be reflected in the Mermaid diagrams in `README.md`.
+6. **Documentation**: Always use `<details>` tags for long JSON/Bash examples in README to maintain scannability.
