@@ -76,3 +76,71 @@ def test_most_frequent_custom_limit():
             # Verify descending order by purchases_count
             counts = [c["purchases_count"] for c in top_customers]
             assert counts == sorted(counts, reverse=True)
+
+
+def test_high_value_total_true():
+    """Test high value customers endpoint with total=true (default, SUM)"""
+
+    with TestClient(app) as client:
+        response = client.get("/customers/high-value")
+
+        assert response.status_code == 200
+
+        customers = response.json()
+        assert isinstance(customers, list)
+        assert len(customers) <= 5
+
+        if customers:
+            # Verify all required fields are present
+            expected_fields = ["name", "email", "country", "city", "value"]
+            for field in expected_fields:
+                assert field in customers[0]
+
+            assert isinstance(customers[0]["value"], (int, float))
+
+            # Verify descending order by value
+            values = [c["value"] for c in customers]
+            assert values == sorted(values, reverse=True)
+
+
+def test_high_value_total_false():
+    """Test high value customers endpoint with total=false (MAX)"""
+
+    with TestClient(app) as client:
+        response = client.get("/customers/high-value?total=false")
+
+        assert response.status_code == 200
+
+        customers = response.json()
+        assert isinstance(customers, list)
+        assert len(customers) <= 5
+
+        if customers:
+            # Verify all required fields are present
+            expected_fields = ["name", "email", "country", "city", "value"]
+            for field in expected_fields:
+                assert field in customers[0]
+
+            assert isinstance(customers[0]["value"], (int, float))
+
+            # Verify descending order by value
+            values = [c["value"] for c in customers]
+            assert values == sorted(values, reverse=True)
+
+
+def test_high_value_custom_limit():
+    """Test high value customers endpoint with custom limit"""
+
+    with TestClient(app) as client:
+        response = client.get("/customers/high-value?limit=3")
+
+        assert response.status_code == 200
+
+        customers = response.json()
+        assert isinstance(customers, list)
+        assert len(customers) <= 3
+
+        if customers:
+            # Verify descending order by value
+            values = [c["value"] for c in customers]
+            assert values == sorted(values, reverse=True)
