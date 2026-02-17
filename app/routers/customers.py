@@ -42,10 +42,11 @@ async def get_high_value_customers(
         True,
         description="True: rank by total spending (SUM). False: rank by highest single order (MAX)",
     ),
+    limit: int = Query(5, gt=0, description="Number of results to return"),
     db: Session = Depends(get_db),
 ) -> List[HighValueCustomerResponse]:
     """Get customers ranked by monetary value"""
-    return customer_repository.get_high_value(db, total=total)  # type: ignore[return-value]
+    return customer_repository.get_high_value(db, total=total, limit=limit)  # type: ignore[return-value]
 
 
 @router.get("/{customer_id}", response_model=CustomerResponse)

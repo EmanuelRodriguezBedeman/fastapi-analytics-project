@@ -88,6 +88,7 @@ def test_high_value_total_true():
 
         customers = response.json()
         assert isinstance(customers, list)
+        assert len(customers) <= 5
 
         if customers:
             # Verify all required fields are present
@@ -112,6 +113,7 @@ def test_high_value_total_false():
 
         customers = response.json()
         assert isinstance(customers, list)
+        assert len(customers) <= 5
 
         if customers:
             # Verify all required fields are present
@@ -121,6 +123,24 @@ def test_high_value_total_false():
 
             assert isinstance(customers[0]["value"], (int, float))
 
+            # Verify descending order by value
+            values = [c["value"] for c in customers]
+            assert values == sorted(values, reverse=True)
+
+
+def test_high_value_custom_limit():
+    """Test high value customers endpoint with custom limit"""
+
+    with TestClient(app) as client:
+        response = client.get("/customers/high-value?limit=3")
+
+        assert response.status_code == 200
+
+        customers = response.json()
+        assert isinstance(customers, list)
+        assert len(customers) <= 3
+
+        if customers:
             # Verify descending order by value
             values = [c["value"] for c in customers]
             assert values == sorted(values, reverse=True)

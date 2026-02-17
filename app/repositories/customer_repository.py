@@ -40,7 +40,7 @@ def get_most_frequent(db: Session, limit: int = 5):
     )
 
 
-def get_high_value(db: Session, total: bool = True):
+def get_high_value(db: Session, total: bool = True, limit: int = 5):
     """
     Returns customers ranked by monetary value (descending).
     If total=True, ranks by SUM(total_amount).
@@ -58,5 +58,6 @@ def get_high_value(db: Session, total: bool = True):
         .join(Order, Customer.id == Order.customer_id)
         .group_by(Customer.id)
         .order_by(agg.desc())
+        .limit(limit)
         .all()
     )
