@@ -38,3 +38,15 @@ class MostFrequentCustomerResponse(BaseModel):
     purchases_count: int
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class HighValueCustomerResponse(BaseModel):
+    """Schema for high value customer analytics response"""
+
+    name: str
+    email: str
+    country: Optional[str] = None
+    city: Optional[str] = None
+    value: float
+
+    model_config = ConfigDict(from_attributes=True)

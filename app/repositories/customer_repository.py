@@ -38,3 +38,25 @@ def get_most_frequent(db: Session, limit: int = 5):
         .limit(limit)
         .all()
     )
+
+
+def get_high_value(db: Session, total: bool = True):
+    """
+    Returns customers ranked by monetary value (descending).
+    If total=True, ranks by SUM(total_amount).
+    If total=False, ranks by MAX(total_amount).
+    """
+    agg = func.sum(Order.total_amount) if total else func.max(Order.total_amount)
+    return (
+        db.query(
+            Customer.name,
+            Customer.email,
+            Customer.country,
+            Customer.city,
+            agg.label("value"),
+        )
+        .join(Order, Customer.id == Order.customer_id)
+        .group_by(Customer.id)
+        .order_by(agg.desc())
+        .all()
+    )
