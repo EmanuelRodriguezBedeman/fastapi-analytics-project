@@ -25,3 +25,16 @@ class CustomerResponse(CustomerBase):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class MostFrequentCustomerResponse(BaseModel):
+    """Schema for most frequent customer analytics response"""
+
+    name: str
+    email: str
+    country: Optional[str] = None
+    city: Optional[str] = None
+    signup_date: Optional[date] = None
+    purchases_count: int
+
+    model_config = ConfigDict(from_attributes=True)
