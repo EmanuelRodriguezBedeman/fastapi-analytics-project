@@ -2,7 +2,7 @@
 Order schemas for request/response validation
 """
 
-from datetime import datetime
+from datetime import date, datetime
 from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
@@ -32,5 +32,18 @@ class OrderStatusBase(BaseModel):
 
     status: str
     count: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class TopBuyerResponse(BaseModel):
+    """Schema for top buyer analytics response"""
+
+    name: str
+    email: str
+    country: Optional[str] = None
+    city: Optional[str] = None
+    signup_date: Optional[date] = None
+    purchases_count: int
 
     model_config = ConfigDict(from_attributes=True)
