@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.repositories import customer_repository
 from app.schemas.customer import (
-    CustomerCountPerCountry,
+    CustomerCountPerCountryResponse,
     CustomerResponse,
     HighValueCustomerResponse,
     MostFrequentCustomerResponse,
@@ -28,10 +28,10 @@ async def get_customers(
     return customers  # type: ignore[return-value]
 
 
-@router.get("/per-country", response_model=List[CustomerCountPerCountry])
+@router.get("/per-country", response_model=CustomerCountPerCountryResponse)
 async def get_customer_count_per_country(
     db: Session = Depends(get_db),
-) -> List[CustomerCountPerCountry]:
+) -> CustomerCountPerCountryResponse:
     """Get customer counts grouped by country"""
     return customer_repository.get_customer_count_per_country(db)  # type: ignore[return-value]
 

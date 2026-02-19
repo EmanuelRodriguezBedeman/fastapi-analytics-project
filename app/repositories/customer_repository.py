@@ -66,10 +66,12 @@ def get_high_value(db: Session, total: bool = True, limit: int = 5):
 def get_customer_count_per_country(db: Session):
     """
     Groups customers by country and counts them.
-    Aggregates at the database level.
+    Aggregates at the database level and returns with metadata.
     """
+    from datetime import datetime, timezone
+
     count_column = func.count(Customer.id).label("customer_count")
-    return (
+    results = (
         db.query(
             Customer.country,
             count_column,
@@ -78,3 +80,15 @@ def get_customer_count_per_country(db: Session):
         .order_by(count_column.desc())
         .all()
     )
+
+    formatted_results = [
+        {"country": r.country, "customer_count": r.customer_count} for r in results
+    ]
+
+    return {
+        "metadata": {
+            "requested_at": datetime.now(timezone.utc),
+            "total_countries": len(formatted_results),
+        },
+        "results": formatted_results,
+    }
