@@ -34,3 +34,14 @@ class OrderStatusBase(BaseModel):
     count: int
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class SalesSummaryResponse(BaseModel):
+    """Schema for sales summary response"""
+
+    country: str
+    year: int
+    aggregation: str
+    value: float
+
+    model_config = ConfigDict(from_attributes=True)
