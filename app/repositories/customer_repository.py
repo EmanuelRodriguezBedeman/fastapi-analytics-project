@@ -61,3 +61,19 @@ def get_high_value(db: Session, total: bool = True, limit: int = 5):
         .limit(limit)
         .all()
     )
+
+
+def get_customer_count_per_country(db: Session):
+    """
+    Groups customers by country and counts them.
+    Aggregates at the database level.
+    """
+    return (
+        db.query(
+            Customer.country,
+            func.count(Customer.id).label("customer_count"),
+        )
+        .group_by(Customer.country)
+        .order_by(Customer.country)
+        .all()
+    )

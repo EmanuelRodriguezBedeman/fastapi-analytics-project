@@ -50,3 +50,12 @@ class HighValueCustomerResponse(BaseModel):
     value: float
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class CustomerCountPerCountry(BaseModel):
+    """Schema for customer count per country"""
+
+    country: Optional[str] = None
+    customer_count: int
+
+    model_config = ConfigDict(from_attributes=True)
