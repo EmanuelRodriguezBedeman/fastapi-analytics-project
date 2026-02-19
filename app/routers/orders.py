@@ -2,14 +2,14 @@
 Order router endpoints
 """
 
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.models.order import OrderStatus
 from app.repositories import order_repository
-from app.schemas.order import OrderResponse, OrderStatusBase, TopBuyerResponse
+from app.schemas.order import OrderResponse, OrderStatusBase, SalesSummaryResponse
 from app.utils.dependencies import get_db
 
 router = APIRouter()
@@ -36,13 +36,20 @@ async def get_order_status_counts(
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 
-@router.get("/top_buyers", response_model=List[TopBuyerResponse])
-async def get_top_buyers(
-    limit: int = Query(5, gt=0, description="Number of top buyers to return"),
+@router.get("/sales-summary", response_model=SalesSummaryResponse, response_model_exclude_none=True)
+async def get_sales_summary(
+    metric: Optional[Literal["sum", "avg", "median", "max"]] = Query(
+        None, description="Specific metric to return (sum, avg, median, max)"
+    ),
+    country: Optional[str] = Query(None, description="Filter by country"),
+    year: Optional[int] = Query(None, description="Filter by year"),
     db: Session = Depends(get_db),
-) -> List[TopBuyerResponse]:
-    """Get top N customers ordered by total number of purchases"""
-    return order_repository.get_top_buyers(db, limit=limit)  # type: ignore[return-value]
+) -> SalesSummaryResponse:
+    """Get sales summary aggregated by country and year (Delivered orders only)"""
+    try:
+        return order_repository.get_sales_summary(db, metric, country, year)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 
 @router.get("/{order_id}", response_model=OrderResponse)

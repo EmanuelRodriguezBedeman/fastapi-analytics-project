@@ -3,7 +3,7 @@ Customer schemas for request/response validation
 """
 
 from datetime import date, datetime
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, EmailStr
 
@@ -25,3 +25,51 @@ class CustomerResponse(CustomerBase):
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class MostFrequentCustomerResponse(BaseModel):
+    """Schema for most frequent customer analytics response"""
+
+    name: str
+    email: str
+    country: Optional[str] = None
+    city: Optional[str] = None
+    signup_date: Optional[date] = None
+    purchases_count: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class HighValueCustomerResponse(BaseModel):
+    """Schema for high value customer analytics response"""
+
+    name: str
+    email: str
+    country: Optional[str] = None
+    city: Optional[str] = None
+    value: float
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class CustomerCountPerCountry(BaseModel):
+    """Schema for customer count per country"""
+
+    country: Optional[str] = None
+    customer_count: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class CustomerCountMetadata(BaseModel):
+    """Schema for customer count response metadata"""
+
+    requested_at: datetime
+    total_countries: int
+
+
+class CustomerCountPerCountryResponse(BaseModel):
+    """Main schema for customer count per country response"""
+
+    metadata: CustomerCountMetadata
+    results: List[CustomerCountPerCountry]

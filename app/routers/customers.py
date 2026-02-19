@@ -4,11 +4,16 @@ Customer router endpoints
 
 from typing import List
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.repositories import customer_repository
-from app.schemas.customer import CustomerResponse
+from app.schemas.customer import (
+    CustomerCountPerCountryResponse,
+    CustomerResponse,
+    HighValueCustomerResponse,
+    MostFrequentCustomerResponse,
+)
 from app.utils.dependencies import get_db
 
 router = APIRouter()
@@ -21,6 +26,36 @@ async def get_customers(
     """Get all customers"""
     customers = customer_repository.get_all(db, skip=skip, limit=limit)
     return customers  # type: ignore[return-value]
+
+
+@router.get("/per-country", response_model=CustomerCountPerCountryResponse)
+async def get_customer_count_per_country(
+    db: Session = Depends(get_db),
+) -> CustomerCountPerCountryResponse:
+    """Get customer counts grouped by country"""
+    return customer_repository.get_customer_count_per_country(db)  # type: ignore[return-value]
+
+
+@router.get("/most-frequent", response_model=List[MostFrequentCustomerResponse])
+async def get_most_frequent_customers(
+    limit: int = Query(5, gt=0, description="Number of top customers to return"),
+    db: Session = Depends(get_db),
+) -> List[MostFrequentCustomerResponse]:
+    """Get top N customers ordered by total number of purchases"""
+    return customer_repository.get_most_frequent(db, limit=limit)  # type: ignore[return-value]
+
+
+@router.get("/high-value", response_model=List[HighValueCustomerResponse])
+async def get_high_value_customers(
+    total: bool = Query(
+        True,
+        description="True: rank by total spending (SUM). False: rank by highest single order (MAX)",
+    ),
+    limit: int = Query(5, gt=0, description="Number of results to return"),
+    db: Session = Depends(get_db),
+) -> List[HighValueCustomerResponse]:
+    """Get customers ranked by monetary value"""
+    return customer_repository.get_high_value(db, total=total, limit=limit)  # type: ignore[return-value]
 
 
 @router.get("/{customer_id}", response_model=CustomerResponse)

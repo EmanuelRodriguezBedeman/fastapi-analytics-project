@@ -2,9 +2,11 @@
 Customer repository - Database access layer for customers
 """
 
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.models.customer import Customer
+from app.models.order import Order
 
 
 def get_all(db: Session, skip: int = 0, limit: int = 100) -> list[Customer]:
@@ -15,3 +17,78 @@ def get_all(db: Session, skip: int = 0, limit: int = 100) -> list[Customer]:
 def get_by_id(db: Session, customer_id: int) -> Customer | None:
     """Get a specific customer by ID"""
     return db.query(Customer).filter(Customer.id == customer_id).first()  # type: ignore[return-value]
+
+
+def get_most_frequent(db: Session, limit: int = 5):
+    """
+    Returns top N customers ordered by total number of purchases (descending).
+    """
+    return (
+        db.query(
+            Customer.name,
+            Customer.email,
+            Customer.country,
+            Customer.city,
+            Customer.signup_date,
+            func.count(Order.id).label("purchases_count"),
+        )
+        .join(Order, Customer.id == Order.customer_id)
+        .group_by(Customer.id)
+        .order_by(func.count(Order.id).desc())
+        .limit(limit)
+        .all()
+    )
+
+
+def get_high_value(db: Session, total: bool = True, limit: int = 5):
+    """
+    Returns customers ranked by monetary value (descending).
+    If total=True, ranks by SUM(total_amount).
+    If total=False, ranks by MAX(total_amount).
+    """
+    agg = func.sum(Order.total_amount) if total else func.max(Order.total_amount)
+    return (
+        db.query(
+            Customer.name,
+            Customer.email,
+            Customer.country,
+            Customer.city,
+            agg.label("value"),
+        )
+        .join(Order, Customer.id == Order.customer_id)
+        .group_by(Customer.id)
+        .order_by(agg.desc())
+        .limit(limit)
+        .all()
+    )
+
+
+def get_customer_count_per_country(db: Session):
+    """
+    Groups customers by country and counts them.
+    Aggregates at the database level and returns with metadata.
+    """
+    from datetime import datetime, timezone
+
+    count_column = func.count(Customer.id).label("customer_count")
+    results = (
+        db.query(
+            Customer.country,
+            count_column,
+        )
+        .group_by(Customer.country)
+        .order_by(count_column.desc())
+        .all()
+    )
+
+    formatted_results = [
+        {"country": r.country, "customer_count": r.customer_count} for r in results
+    ]
+
+    return {
+        "metadata": {
+            "requested_at": datetime.now(timezone.utc),
+            "total_countries": len(formatted_results),
+        },
+        "results": formatted_results,
+    }
