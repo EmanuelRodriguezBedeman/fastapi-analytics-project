@@ -53,6 +53,10 @@
   - Diagram: Flowchart TD in README.
 
 ## 5. RECENT CHANGES LOG (Feb 2026)
+- **[2026-02-19] Customers per Country Analytics**:
+  - Implemented `GET /customers/per-country` to count customers grouped by geography.
+  - Aggregation performed at DB level using `GROUP BY country` and `COUNT(*)`.
+  - Added deterministic ordering by country and integration tests.
 - **[2026-02-19] Sales Summary & Median Aggregation**:
   - Implemented `GET /orders/sales-summary` with `avg`, `max`, and `median` (DB-level via `percentile_cont`) aggregations.
   - Added support for filtering by `country` and `year` (extracted via `extract` function).
@@ -60,6 +64,7 @@
 - **[2026-02-18] Analytics Enhancements (Part 2)**:
   - Added `GET /customers/high-value` with `total` (SUM) vs `max_order` (MAX) logic and `limit` parameter.
   - Refactored `GET /orders/top_buyers` to `GET /customers/most-frequent` for correct domain alignment.
+
 - **[2026-02-12] Documentation Final Polish**:
   - Added Table of Contents with functional slugs and Detailed Test Execution Examples.
   - Version bump to `1.0.0`.

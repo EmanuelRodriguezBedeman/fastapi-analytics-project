@@ -3,7 +3,7 @@ Customer schemas for request/response validation
 """
 
 from datetime import date, datetime
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import BaseModel, ConfigDict, EmailStr
 
@@ -50,3 +50,26 @@ class HighValueCustomerResponse(BaseModel):
     value: float
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class CustomerCountPerCountry(BaseModel):
+    """Schema for customer count per country"""
+
+    country: Optional[str] = None
+    customer_count: int
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+class CustomerCountMetadata(BaseModel):
+    """Schema for customer count response metadata"""
+
+    requested_at: datetime
+    total_countries: int
+
+
+class CustomerCountPerCountryResponse(BaseModel):
+    """Main schema for customer count per country response"""
+
+    metadata: CustomerCountMetadata
+    results: List[CustomerCountPerCountry]

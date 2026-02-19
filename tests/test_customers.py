@@ -144,3 +144,36 @@ def test_high_value_custom_limit():
             # Verify descending order by value
             values = [c["value"] for c in customers]
             assert values == sorted(values, reverse=True)
+
+
+def test_customers_per_country():
+    """Test customer count per country endpoint with metadata"""
+
+    with TestClient(app) as client:
+        response = client.get("/customers/per-country")
+
+        assert response.status_code == 200
+
+        data = response.json()
+        assert "metadata" in data
+        assert "results" in data
+
+        metadata = data["metadata"]
+        assert "requested_at" in metadata
+        assert "total_countries" in metadata
+        assert isinstance(metadata["total_countries"], int)
+
+        results = data["results"]
+        assert isinstance(results, list)
+
+        if results:
+            # Verify all required fields are present
+            expected_fields = ["country", "customer_count"]
+            for field in expected_fields:
+                assert field in results[0]
+
+            assert isinstance(results[0]["customer_count"], int)
+
+            # Verify descending order by customer_count
+            customer_counts = [c["customer_count"] for c in results]
+            assert customer_counts == sorted(customer_counts, reverse=True)
