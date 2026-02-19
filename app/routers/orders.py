@@ -36,18 +36,18 @@ async def get_order_status_counts(
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 
-@router.get("/sales-summary", response_model=List[SalesSummaryResponse])
+@router.get("/sales-summary", response_model=SalesSummaryResponse, response_model_exclude_none=True)
 async def get_sales_summary(
-    aggregation: Literal["avg", "max", "median"] = Query(
-        "avg", description="Aggregation function (avg, max, median)"
+    metric: Optional[Literal["sum", "avg", "median", "max"]] = Query(
+        None, description="Specific metric to return (sum, avg, median, max)"
     ),
     country: Optional[str] = Query(None, description="Filter by country"),
     year: Optional[int] = Query(None, description="Filter by year"),
     db: Session = Depends(get_db),
-) -> List[SalesSummaryResponse]:
-    """Get sales summary aggregated by country and year"""
+) -> SalesSummaryResponse:
+    """Get sales summary aggregated by country and year (Delivered orders only)"""
     try:
-        return order_repository.get_sales_summary(db, aggregation, country, year)
+        return order_repository.get_sales_summary(db, metric, country, year)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
