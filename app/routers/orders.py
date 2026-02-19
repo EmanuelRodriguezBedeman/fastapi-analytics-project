@@ -2,14 +2,14 @@
 Order router endpoints
 """
 
-from typing import List, Optional
+from typing import List, Literal, Optional
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.models.order import OrderStatus
 from app.repositories import order_repository
-from app.schemas.order import OrderResponse, OrderStatusBase
+from app.schemas.order import OrderResponse, OrderStatusBase, SalesSummaryResponse
 from app.utils.dependencies import get_db
 
 router = APIRouter()
@@ -32,6 +32,22 @@ async def get_order_status_counts(
     """Get order counts grouped by status"""
     try:
         return order_repository.get_order_counts_by_status(db, order_status)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
+
+
+@router.get("/sales-summary", response_model=SalesSummaryResponse, response_model_exclude_none=True)
+async def get_sales_summary(
+    metric: Optional[Literal["sum", "avg", "median", "max"]] = Query(
+        None, description="Specific metric to return (sum, avg, median, max)"
+    ),
+    country: Optional[str] = Query(None, description="Filter by country"),
+    year: Optional[int] = Query(None, description="Filter by year"),
+    db: Session = Depends(get_db),
+) -> SalesSummaryResponse:
+    """Get sales summary aggregated by country and year (Delivered orders only)"""
+    try:
+        return order_repository.get_sales_summary(db, metric, country, year)
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 

@@ -1,6 +1,6 @@
 # CONTEXT HISTORY & ARCHITECTURAL DECISIONS
 # Intended Audience: Future AI Agents
-# Last Updated: 2026-02-16
+# Last Updated: 2026-02-19
 
 ## 1. PROJECT IDENTITY
 - **Name**: FastAPI E-commerce Analytics API
@@ -30,8 +30,8 @@
 
 ## 3. KEY FEATURES & IMPLEMENTATION
 - **Analytics Endpoints**:
-  - Uses SQLAlchemy `func.count` + `group_by`.
-  - Location: Parent domain routers (e.g., `/orders/statuses`).
+  - Uses SQLAlchemy `func.count`, `func.sum`, `func.max`, and `func.percentile_cont` + `group_by`.
+  - Location: Parent domain routers (e.g., `/orders/statuses`, `/customers/most-frequent`).
   - **Path Precedence**: Analytics paths (static) must be declared BEFORE dynamic ID paths (`/statuses` before `/{id}`) to prevent path shadowing errors (HTTP 422).
 - **Documentation UX**:
   - **Swagger UI**: Configured with `defaultModelsExpandDepth: 0` to collapse technical schemas by default.
@@ -53,19 +53,19 @@
   - Diagram: Flowchart TD in README.
 
 ## 5. RECENT CHANGES LOG (Feb 2026)
+- **[2026-02-19] Sales Summary & Median Aggregation**:
+  - Implemented `GET /orders/sales-summary` with `avg`, `max`, and `median` (DB-level via `percentile_cont`) aggregations.
+  - Added support for filtering by `country` and `year` (extracted via `extract` function).
+  - Created `tests/test_sales_summary.py` for full coverage of aggregation/filtering logic.
+- **[2026-02-18] Analytics Enhancements (Part 2)**:
+  - Added `GET /customers/high-value` with `total` (SUM) vs `max_order` (MAX) logic and `limit` parameter.
+  - Refactored `GET /orders/top_buyers` to `GET /customers/most-frequent` for correct domain alignment.
 - **[2026-02-12] Documentation Final Polish**:
-  - Added Table of Contents with functional slugs.
-  - Added Detailed Test Execution Examples linked to `tests/`.
-  - Full API Metadata (Summary, Description, Contact, License) registered in `app/main.py`.
+  - Added Table of Contents with functional slugs and Detailed Test Execution Examples.
   - Version bump to `1.0.0`.
 - **[2026-02-11] UI/UX Refinement**:
   - Collapsed Schemas in Swagger and hidden Root/Health endpoints from OpenAPI spec.
   - Fixed `scripts/seeder.py` linting (I001, F401, E722).
-- **[2026-02-10] Architectural Diagrams**:
-  - Added Mermaid Sequence Diagrams, ERD, and Git Branching Strategy to README.
-- **[2026-02-09] Refactor: Order Status Consolidation**:
-  - Merged `order_status` domain into `orders`.
-  - Fixed 422 Path Conflict in `orders.py` by reordering routes.
 
 ## 6. CRITICAL RULES FOR AGENTS
 1. **Domain Cohesion**: Do not create separate modules for sub-resources. Merge them into the parent domain (e.g., reviews relate to products/customers).
@@ -74,3 +74,4 @@
 4. **Clean Code**: Post-edit steps: `ruff check --fix` and `ruff format`.
 5. **Transparency**: All architecture changes must be reflected in the Mermaid diagrams in `README.md`.
 6. **Documentation**: Always use `<details>` tags for long JSON/Bash examples in README to maintain scannability.
+
