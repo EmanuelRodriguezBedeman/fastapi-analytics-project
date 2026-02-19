@@ -165,6 +165,6 @@ def test_customers_per_country():
 
             assert isinstance(counts[0]["customer_count"], int)
 
-            # Verify deterministic order by country
-            countries = [c["country"] for c in counts if c["country"] is not None]
-            assert countries == sorted(countries)
+            # Verify descending order by customer_count
+            customer_counts = [c["customer_count"] for c in counts]
+            assert customer_counts == sorted(customer_counts, reverse=True)

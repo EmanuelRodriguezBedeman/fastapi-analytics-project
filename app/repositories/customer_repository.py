@@ -68,12 +68,13 @@ def get_customer_count_per_country(db: Session):
     Groups customers by country and counts them.
     Aggregates at the database level.
     """
+    count_column = func.count(Customer.id).label("customer_count")
     return (
         db.query(
             Customer.country,
-            func.count(Customer.id).label("customer_count"),
+            count_column,
         )
         .group_by(Customer.country)
-        .order_by(Customer.country)
+        .order_by(count_column.desc())
         .all()
     )
