@@ -53,7 +53,12 @@
   - Diagram: Flowchart TD in README.
 
 ## 5. RECENT CHANGES LOG (Feb 2026)
+- **[2026-02-21] Top Products by Revenue Analytics**:
+  - Implemented `GET /products/top-revenue` with CTE-based SQL aggregation.
+  - Restricted revenue calculation to 'delivered' orders.
+  - Added support for filtering by `country` and `year`.
 - **[2026-02-19] Customers per Country Analytics**:
+
   - Implemented `GET /customers/per-country` to count customers grouped by geography.
   - Aggregation performed at DB level using `GROUP BY country` and `COUNT(*)`.
   - Added deterministic ordering by country and integration tests.

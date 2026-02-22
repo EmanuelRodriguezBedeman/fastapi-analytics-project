@@ -1,17 +1,44 @@
-"""
-Product router endpoints
-"""
-
+from datetime import datetime, timezone
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.repositories import product_repository
-from app.schemas.product import ProductResponse
+from app.schemas.product import ProductResponse, TopRevenueResponse
 from app.utils.dependencies import get_db
 
 router = APIRouter()
+
+
+@router.get("/top-revenue", response_model=TopRevenueResponse)
+async def get_top_products_by_revenue(
+    limit: int = Query(5, gt=0, description="Number of top products to return"),
+    country: Optional[str] = Query(None, description="Filter by country"),
+    year: Optional[int] = Query(None, description="Filter by year"),
+    db: Session = Depends(get_db),
+) -> TopRevenueResponse:
+    """Get top products by revenue (delivered orders only)"""
+    try:
+        data = product_repository.get_top_products_by_revenue(
+            db, limit=limit, country=country, year=year
+        )
+
+        return TopRevenueResponse(
+            metadata={
+                "requested_at": datetime.now(timezone.utc),
+                "currency": "USD",
+                "total_groups": data["total_groups"],
+                "applied_filters": {
+                    "limit": limit,
+                    "country": country,
+                    "year": year,
+                },
+            },
+            results=data["results"],
+        )
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
 
 @router.get("/", response_model=List[ProductResponse])
