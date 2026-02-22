@@ -1,4 +1,5 @@
 import pytest
+
 from app.main import app
 from app.utils.rate_limiter import rate_limit_dependency
 
