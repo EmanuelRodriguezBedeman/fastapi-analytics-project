@@ -72,14 +72,4 @@ def get_top_products_by_revenue(
     # Final results with ordering and limit
     results = query.order_by(revenue_agg.desc()).limit(limit).all()
 
-    return {
-        "total_groups": total_groups,
-        "results": [
-            {
-                "product_id": r.id,
-                "product_name": r.name,
-                "revenue": float(r.revenue) if r.revenue is not None else 0.0,
-            }
-            for r in results
-        ],
-    }
+    return results, total_groups

@@ -28,33 +28,9 @@ class ProductResponse(ProductBase):
     model_config = ConfigDict(from_attributes=True)
 
 
-class TopRevenueFilters(BaseModel):
-    """Schema for top revenue filters metadata"""
-
-    limit: int
-    country: Optional[str] = None
-    year: Optional[int] = None
-
-
-class TopRevenueMetadata(BaseModel):
-    """Schema for top revenue metadata"""
-
-    requested_at: datetime
-    currency: str = "USD"
-    total_groups: int
-    applied_filters: TopRevenueFilters
-
-
 class TopRevenueResultItem(BaseModel):
     """Schema for top revenue result item"""
 
     product_id: int
     product_name: str
     revenue: float
-
-
-class TopRevenueResponse(BaseModel):
-    """Main schema for top revenue response"""
-
-    metadata: TopRevenueMetadata
-    results: list[TopRevenueResultItem]

@@ -77,6 +77,8 @@ def test_sales_summary_filters_and_metadata():
             assert filters["country"] == country
             assert filters["year"] == year
             assert filters["status"] == "delivered"
+            assert "metric" in filters
+            assert filters["metric"] is None
 
             # Check results match filters
             for res in data["results"]:
