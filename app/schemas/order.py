@@ -3,7 +3,7 @@ Order schemas for request/response validation
 """
 
 from datetime import datetime
-from typing import List, Optional
+from typing import Optional
 
 from pydantic import BaseModel, ConfigDict
 
@@ -52,28 +52,3 @@ class SalesGroup(BaseModel):
     country: str
     year: int
     metrics: SalesMetrics
-
-
-class SalesFilters(BaseModel):
-    """Schema for applied filters metadata"""
-
-    country: Optional[str] = None
-    year: Optional[int] = None
-    status: Optional[str] = None
-
-
-class SalesMetadata(BaseModel):
-    """Schema for response metadata"""
-
-    requested_at: datetime
-    last_data_point: Optional[datetime] = None
-    currency: str = "USD"
-    total_groups: int
-    applied_filters: SalesFilters
-
-
-class SalesSummaryResponse(BaseModel):
-    """Main schema for sales summary response"""
-
-    metadata: SalesMetadata
-    results: List[SalesGroup]

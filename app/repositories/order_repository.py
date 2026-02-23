@@ -25,18 +25,12 @@ def get_order_counts_by_status(db: Session, order_status: str):
     """
     Groups orders by status and counts them
     """
-    if not order_status:
-        return (
-            db.query(Order.status, func.count(Order.status).label("count"))
-            .group_by(Order.status)
-            .all()
-        )
-    return (
-        db.query(Order.status, func.count(Order.status).label("count"))
-        .filter(Order.status == order_status)
-        .group_by(Order.status)
-        .all()
-    )
+    query = db.query(Order.status, func.count(Order.status).label("count"))
+    if order_status:
+        query = query.filter(Order.status == order_status)
+
+    results = query.group_by(Order.status).all()
+    return results, len(results)
 
 
 def get_sales_summary(
@@ -50,8 +44,6 @@ def get_sales_summary(
     Only includes 'delivered' orders for data reliability.
     Supported metrics: sum, avg, median, max, count.
     """
-    from datetime import datetime, timezone
-
     # Extract year from created_at
     order_year = extract("year", Order.created_at).label("year")
 
@@ -90,57 +82,4 @@ def get_sales_summary(
         .all()
     )
 
-    # Calculate last_data_point from the filtered 'delivered' Orders
-    filter_query = (
-        db.query(func.max(Order.created_at))
-        .join(Customer, Order.customer_id == Customer.id)
-        .filter(Order.status == "delivered")
-    )
-    if country:
-        filter_query = filter_query.filter(Customer.country == country)
-    if year:
-        filter_query = filter_query.filter(order_year == year)
-
-    last_data_point = filter_query.scalar()
-
-    # Format the metrics
-    formatted_results = []
-    for r in results:
-        metrics = {"count": int(r.count)}
-        metric_map = {
-            "sum": ("sum", "sum"),
-            "avg": ("average", "average"),
-            "median": ("median", "median"),
-            "max": ("max", "max"),
-        }
-
-        if metric:
-            if metric in metric_map:
-                key, attr = metric_map[metric]
-                metrics[key] = float(getattr(r, attr)) if getattr(r, attr) is not None else 0.0
-        else:
-            for key, attr in metric_map.values():
-                metrics[key] = float(getattr(r, attr)) if getattr(r, attr) is not None else 0.0
-
-        formatted_results.append(
-            {
-                "country": r.country,
-                "year": int(r.year),
-                "metrics": metrics,
-            }
-        )
-
-    return {
-        "metadata": {
-            "requested_at": datetime.now(timezone.utc),
-            "last_data_point": last_data_point,
-            "currency": "USD",
-            "total_groups": len(formatted_results),
-            "applied_filters": {
-                "country": country,
-                "year": year,
-                "status": "delivered",
-            },
-        },
-        "results": formatted_results,
-    }
+    return results, len(results)

@@ -26,3 +26,11 @@ class ProductResponse(ProductBase):
     updated_at: Optional[datetime] = None
 
     model_config = ConfigDict(from_attributes=True)
+
+
+class TopRevenueResultItem(BaseModel):
+    """Schema for top revenue result item"""
+
+    product_id: int
+    product_name: str
+    revenue: float
