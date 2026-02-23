@@ -23,7 +23,7 @@ def get_most_frequent(db: Session, limit: int = 5):
     """
     Returns top N customers ordered by total number of purchases (descending).
     """
-    return (
+    query = (
         db.query(
             Customer.name,
             Customer.email,
@@ -34,10 +34,12 @@ def get_most_frequent(db: Session, limit: int = 5):
         )
         .join(Order, Customer.id == Order.customer_id)
         .group_by(Customer.id)
-        .order_by(func.count(Order.id).desc())
-        .limit(limit)
-        .all()
     )
+
+    total_groups = db.query(query.subquery()).count()
+    results = query.order_by(func.count(Order.id).desc()).limit(limit).all()
+
+    return results, total_groups
 
 
 def get_high_value(db: Session, total: bool = True, limit: int = 5):
@@ -47,7 +49,7 @@ def get_high_value(db: Session, total: bool = True, limit: int = 5):
     If total=False, ranks by MAX(total_amount).
     """
     agg = func.sum(Order.total_amount) if total else func.max(Order.total_amount)
-    return (
+    query = (
         db.query(
             Customer.name,
             Customer.email,
@@ -57,19 +59,19 @@ def get_high_value(db: Session, total: bool = True, limit: int = 5):
         )
         .join(Order, Customer.id == Order.customer_id)
         .group_by(Customer.id)
-        .order_by(agg.desc())
-        .limit(limit)
-        .all()
     )
+
+    total_groups = db.query(query.subquery()).count()
+    results = query.order_by(agg.desc()).limit(limit).all()
+
+    return results, total_groups
 
 
 def get_customer_count_per_country(db: Session):
     """
     Groups customers by country and counts them.
-    Aggregates at the database level and returns with metadata.
+    Aggregates at the database level.
     """
-    from datetime import datetime, timezone
-
     count_column = func.count(Customer.id).label("customer_count")
     results = (
         db.query(
@@ -81,14 +83,4 @@ def get_customer_count_per_country(db: Session):
         .all()
     )
 
-    formatted_results = [
-        {"country": r.country, "customer_count": r.customer_count} for r in results
-    ]
-
-    return {
-        "metadata": {
-            "requested_at": datetime.now(timezone.utc),
-            "total_countries": len(formatted_results),
-        },
-        "results": formatted_results,
-    }
+    return results, len(results)
