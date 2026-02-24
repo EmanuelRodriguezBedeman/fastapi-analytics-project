@@ -44,3 +44,20 @@ class TopRevenueFilters(BaseModel):
     country: Optional[str] = None
     year: Optional[int] = None
     category: Optional[str] = None
+
+
+class RevenueByCategoryResult(BaseModel):
+    """Schema for revenue statistics per category result"""
+
+    category: str
+    average_revenue: Optional[float] = None
+    median_revenue: Optional[float] = None
+    max_revenue: Optional[float] = None
+
+
+class RevenueByCategoryFilters(BaseModel):
+    """Schema for revenue by category filters metadata"""
+
+    country: Optional[str] = None
+    year: Optional[int] = None
+    metrics: Optional[list[str]] = None
