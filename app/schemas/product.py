@@ -34,3 +34,12 @@ class TopRevenueResultItem(BaseModel):
     product_id: int
     product_name: str
     revenue: float
+
+
+class TopRevenueFilters(BaseModel):
+    """Schema for top revenue filters metadata"""
+
+    limit: int
+    country: Optional[str] = None
+    year: Optional[int] = None
+    category: Optional[str] = None

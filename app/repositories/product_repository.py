@@ -33,6 +33,7 @@ def get_top_products_by_revenue(
     limit: int = 5,
     country: Optional[str] = None,
     year: Optional[int] = None,
+    category: Optional[str] = None,
 ):
     """
     Returns top products ranked by revenue.
@@ -62,6 +63,9 @@ def get_top_products_by_revenue(
 
     if year:
         query = query.filter(extract("year", delivered_orders_cte.c.created_at) == year)
+
+    if category and category.lower() != "any":
+        query = query.filter(Product.category == category)
 
     # Group by product
     query = query.group_by(Product.id, Product.name)

@@ -55,7 +55,12 @@ def test_top_revenue_products():
         assert "requested_at" in metadata
         assert metadata["currency"] == "USD"
         assert "total_groups" in metadata
-        assert metadata["applied_filters"] == {"limit": 5, "country": None, "year": None}
+        assert metadata["applied_filters"] == {
+            "limit": 5,
+            "country": None,
+            "year": None,
+            "category": None,
+        }
 
         results = data["results"]
         assert len(results) <= 5
@@ -70,7 +75,40 @@ def test_top_revenue_with_filters():
         data = response.json()
         assert len(data["results"]) <= 2
         assert data["metadata"]["applied_filters"]["limit"] == 2
+        assert "category" in data["metadata"]["applied_filters"]
 
         # Test with invalid limit
         response = client.get("/products/top-revenue?limit=0")
         assert response.status_code == 422
+
+
+def test_top_revenue_category_filter():
+    """Test top revenue products with category filter"""
+    with TestClient(app) as client:
+        # 1. Get a valid category from general products list
+        list_res = client.get("/products?limit=10")
+        products = list_res.json()["results"]
+        if not products:
+            return
+
+        target_category = products[0]["category"]
+
+        # 2. Test specific category
+        res = client.get(f"/products/top-revenue?category={target_category}")
+        assert res.status_code == 200
+        data = res.json()
+        assert data["metadata"]["applied_filters"]["category"] == target_category
+
+        # 3. Test category="any" (should be null in metadata)
+        res_any = client.get("/products/top-revenue?category=any")
+        assert res_any.status_code == 200
+        data_any = res_any.json()
+        assert data_any["metadata"]["applied_filters"]["category"] is None
+
+        # 4. Test combined filters (category + country)
+        res_comb = client.get(f"/products/top-revenue?category={target_category}&limit=3")
+        assert res_comb.status_code == 200
+        data_comb = res_comb.json()
+        assert data_comb["metadata"]["applied_filters"]["category"] == target_category
+        assert data_comb["metadata"]["applied_filters"]["limit"] == 3
+        assert len(data_comb["results"]) <= 3
