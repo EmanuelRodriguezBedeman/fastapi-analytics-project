@@ -33,6 +33,7 @@ class TopRevenueResultItem(BaseModel):
 
     product_id: int
     product_name: str
+    category: Optional[str] = None
     revenue: float
 
 

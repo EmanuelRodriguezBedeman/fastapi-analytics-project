@@ -64,6 +64,8 @@ def test_top_revenue_products():
 
         results = data["results"]
         assert len(results) <= 5
+        if results:
+            assert "category" in results[0]
 
 
 def test_top_revenue_with_filters():
@@ -98,6 +100,8 @@ def test_top_revenue_category_filter():
         assert res.status_code == 200
         data = res.json()
         assert data["metadata"]["applied_filters"]["category"] == target_category
+        if data["results"]:
+            assert data["results"][0]["category"] == target_category
 
         # 3. Test category="any" (should be "any" in metadata, not None)
         res_any = client.get("/products/top-revenue?category=any")

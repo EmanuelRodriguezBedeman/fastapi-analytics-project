@@ -30,6 +30,7 @@ async def get_top_products_by_revenue(
             {
                 "product_id": r.id,
                 "product_name": r.name,
+                "category": r.category,
                 "revenue": float(r.revenue) if r.revenue is not None else 0.0,
             }
             for r in results
