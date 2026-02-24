@@ -22,13 +22,8 @@ async def get_top_products_by_revenue(
 ) -> BaseResponse[TopRevenueResultItem]:
     """Get top products by revenue (delivered orders only)"""
     try:
-        # Normalize category: None or "any" means no filter
-        repo_category = category
-        if repo_category and repo_category.lower() == "any":
-            repo_category = None
-
         results, total_groups = product_repository.get_top_products_by_revenue(
-            db, limit=limit, country=country, year=year, category=repo_category
+            db, limit=limit, country=country, year=year, category=category
         )
 
         formatted_results = [
@@ -49,7 +44,7 @@ async def get_top_products_by_revenue(
                     "limit": limit,
                     "country": country,
                     "year": year,
-                    "category": repo_category if repo_category else None,
+                    "category": category,
                 },
             },
             results=formatted_results,

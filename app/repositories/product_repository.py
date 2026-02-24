@@ -64,7 +64,7 @@ def get_top_products_by_revenue(
     if year:
         query = query.filter(extract("year", delivered_orders_cte.c.created_at) == year)
 
-    if category and category.lower() != "any":
+    if category:
         query = query.filter(Product.category == category)
 
     # Group by product

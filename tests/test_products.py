@@ -99,11 +99,11 @@ def test_top_revenue_category_filter():
         data = res.json()
         assert data["metadata"]["applied_filters"]["category"] == target_category
 
-        # 3. Test category="any" (should be null in metadata)
+        # 3. Test category="any" (should be "any" in metadata, not None)
         res_any = client.get("/products/top-revenue?category=any")
         assert res_any.status_code == 200
         data_any = res_any.json()
-        assert data_any["metadata"]["applied_filters"]["category"] is None
+        assert data_any["metadata"]["applied_filters"]["category"] == "any"
 
         # 4. Test combined filters (category + country)
         res_comb = client.get(f"/products/top-revenue?category={target_category}&limit=3")
