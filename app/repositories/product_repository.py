@@ -33,6 +33,7 @@ def get_top_products_by_revenue(
     limit: int = 5,
     country: Optional[str] = None,
     year: Optional[int] = None,
+    category: Optional[str] = None,
 ):
     """
     Returns top products ranked by revenue.
@@ -49,7 +50,7 @@ def get_top_products_by_revenue(
     revenue_agg = func.sum(OrderItem.quantity * OrderItem.price).label("revenue")
 
     query = (
-        db.query(Product.id, Product.name, revenue_agg)
+        db.query(Product.id, Product.name, Product.category, revenue_agg)
         .join(OrderItem, Product.id == OrderItem.product_id)
         .join(delivered_orders_cte, OrderItem.order_id == delivered_orders_cte.c.id)
     )
@@ -63,8 +64,11 @@ def get_top_products_by_revenue(
     if year:
         query = query.filter(extract("year", delivered_orders_cte.c.created_at) == year)
 
+    if category:
+        query = query.filter(Product.category == category)
+
     # Group by product
-    query = query.group_by(Product.id, Product.name)
+    query = query.group_by(Product.id, Product.name, Product.category)
 
     # Get total groups before limit (safe way for grouped queries)
     total_groups = db.query(query.subquery()).count()

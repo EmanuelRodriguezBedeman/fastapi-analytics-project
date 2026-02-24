@@ -17,18 +17,20 @@ async def get_top_products_by_revenue(
     limit: int = Query(5, gt=0, description="Number of top products to return"),
     country: Optional[str] = Query(None, description="Filter by country"),
     year: Optional[int] = Query(None, description="Filter by year"),
+    category: Optional[str] = Query(None, description="Filter by category"),
     db: Session = Depends(get_db),
 ) -> BaseResponse[TopRevenueResultItem]:
     """Get top products by revenue (delivered orders only)"""
     try:
         results, total_groups = product_repository.get_top_products_by_revenue(
-            db, limit=limit, country=country, year=year
+            db, limit=limit, country=country, year=year, category=category
         )
 
         formatted_results = [
             {
                 "product_id": r.id,
                 "product_name": r.name,
+                "category": r.category,
                 "revenue": float(r.revenue) if r.revenue is not None else 0.0,
             }
             for r in results
@@ -43,10 +45,12 @@ async def get_top_products_by_revenue(
                     "limit": limit,
                     "country": country,
                     "year": year,
+                    "category": category,
                 },
             },
             results=formatted_results,
         )
+
     except Exception as e:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=str(e))
 
